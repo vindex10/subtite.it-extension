@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Foobar",
+  "version": "1.0",
+  "description": "Test",
+  "icons": {
+    "48": "icons/extension-logo-48.png",
+    "96": "icons/extension-logo-96.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["static/js/2.b8d65a8c.chunk.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": "icons/extension-logo-19.png",
+    "default_title": "Subtite",
+    "default_popup": "index.html"
+  }
+}

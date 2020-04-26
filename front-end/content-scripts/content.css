@@ -1,0 +1,62 @@
+.button__add-translation {
+    margin-top: .5em;
+    cursor: pointer;
+    padding: 1em 2em;
+    outline: none;
+    background-color: #c00000;
+    color: #ffffff;
+    border: none;
+}
+
+.button__add-translation:hover {
+    background-color: #820000;
+}
+
+.add-translation__form {
+    background-color: #f5f5f5;
+    padding: 1em 0;
+    max-width: 600px;
+}
+
+.add-translation__text {
+    padding: .2em .5em;
+    text-indent: 15px;
+    line-height: 22px;
+    max-width: 600px;
+    min-width: 600px;
+    font-size: 15px;
+    height: 100px;
+    border: 1px solid transparent;
+    overflow: auto;
+    border-radius: 6px;
+}
+
+.add-translation__textarea {
+    outline: none;
+    border: none;
+    background-color: #fff4f3;
+}
+
+.add-translation__submit-button-container {
+    text-align: right;
+}
+
+.add-translation__submit-button,
+.add-translation__toggle-button {
+    margin-top: .5em;
+    cursor: pointer;
+    padding: 1em 2em;
+    width: 150px;
+    outline: none;
+    background-color: #c00000;
+    color: #ffffff;
+    border: none;
+}
+.add-translation__submit-button:hover,
+.add-translation__toggle-button:hover {
+    background-color: #820000;
+}
+
+.hide-add-translation {
+    display: none;
+}

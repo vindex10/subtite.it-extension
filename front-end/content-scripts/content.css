@@ -1,15 +1,9 @@
-.button__add-translation {
-    margin-top: .5em;
-    cursor: pointer;
-    padding: 1em 2em;
-    outline: none;
-    background-color: #c00000;
-    color: #ffffff;
-    border: none;
-}
-
-.button__add-translation:hover {
-    background-color: #820000;
+.add-translation {
+    height: 8em;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-content: flex-around;
 }
 
 .add-translation__form {
@@ -42,7 +36,6 @@
 }
 
 .add-translation__submit-button,
-.add-translation__toggle-button {
     margin-top: .5em;
     cursor: pointer;
     padding: 1em 2em;
@@ -52,9 +45,36 @@
     color: #ffffff;
     border: none;
 }
+
 .add-translation__submit-button:hover,
+    background-color: #820000;
+}
+
 .add-translation__toggle-button:hover {
     background-color: #820000;
+}
+
+.add-translation__toggle-button img {
+    height: 100%;
+    width: 100%;
+}
+
+.add-translation__toggle-button {
+    opacity: 1;
+    transition: opacity 4s ease-in-out;
+    height: 4em;
+    width: 4em;
+    position: relative;
+    margin: 1em auto;
+    overflow: hidden;
+    padding: 0;
+    border: 0; 
+    cursor: pointer;
+}
+
+.add-translation__toggle-button-hidden {
+    opacity: 0;
+    transition: opacity 2s fade-out;
 }
 
 .hide-add-translation {

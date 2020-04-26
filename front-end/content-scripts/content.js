@@ -1,5 +1,16 @@
 window.setTimeout(() => {
 
+  penPaperImgUrl = browser.extension.getURL("assets/img/pen-paper-dark.png");
+
+  function showEditor() {
+    document.querySelector('#info-contents').insertAdjacentHTML('beforebegin',
+       `<div class="add-translation">
+             <button class="add-translation__toggle-button"><img src="`+penPaperImgUrl+`" /></button>
+        </div>`);
+  }
+
+  showEditor();
+
   const vid = document.querySelector('.video-stream');
   // if video is longer than 10 minutes - show popup 2 minutes before video ends
   // else - before 30 seconds
@@ -33,20 +44,20 @@ window.setTimeout(() => {
   );
 
   function start(){
-    showEditor();
+    showEditorContent();
   }
 
-
-  function showEditor() {
-    document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
-             <button class="add-translation__toggle-button">Hide</button>
+  function showEditorContent() {
+    document.querySelector(".add-translation").innerHTML = `
+        <div class="add-translation__contents">
            <form class="add-translation__form">
               <p class="add-translation__text add-translation__prev-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis debitis, dicta eaque enim et impedit mmodi consequuntur eligeprovident teue aut autem culpa dolorum ducimus.</p>
               <textarea class="add-translation__text add-translation__textarea">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis debitis, dicta eaque enim et impedit mmodi consequuntur eligeprovident teue aut autem culpa dolorum ducimus.</textarea>
               <p class="add-translation__text add-translation__next-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis debitis, dicta eaque enim et impedit mmodi consequuntur eligeprovident teue aut autem culpa dolorum ducimus.</p>
               <div class="add-translation__submit-button-container"><button class="add-translation__submit-button" type="submit">Submit</button></div>
           </form>
-        </div>`);
+        </div>
+      `
 
         document.querySelector('.add-translation__toggle-button').addEventListener('click', (event)=> {
 

@@ -36,5 +36,9 @@
     "default_icon": "assets/img/icons/extension-logo-19.png",
     "default_title": "Subtite.it",
     "default_popup": "/popup/index.html"
-  }
+  },
+
+  "web_accessible_resources": [
+      "assets/img/pen-paper-dark.png"
+  ]
 }

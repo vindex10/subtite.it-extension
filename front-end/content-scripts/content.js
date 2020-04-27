@@ -1,33 +1,103 @@
 window.setTimeout(() => {
 
-  const vid = document.querySelector('.video-stream');
-  // if video is longer than 10 minutes - show popup 2 minutes before video ends
-  // else - before 30 seconds
-  function calcTimeLeft(video) {
-    if (video.duration > 600) {
-      return 120;
-    } else {
-      return 30;
-    }
-  }
-  function showPopUp(video) {
-    const timeToShow = video.duration - calcTimeLeft(video);
-
-      const checkTimeToShow = setInterval(()=> {
-          if (video.currentTime >= timeToShow) {
-            // browser.runtime.openPopup();
-            alert('Working!!!');
-            clearInterval(checkTimeToShow);
-          }
-      }, 1000);
-  }
-  showPopUp(vid);
-
 
   browser.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       if( request.message === "start" ) {
-        start();
+        console.log('Get connection!');
+
+      } else if (request.signInData) {
+        async function postData(url, data) {
+
+          const response = await fetch(url, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        return await response.json();
+      }
+      postData('https://subtite.it/auth', request.signInData)
+        .then((dataToken) => {
+          localStorage.setItem('jwt_token', dataToken.access_token);
+
+        })
+        .then(()=> {
+
+          async function getData(url, videoLink) {
+
+            const videoLinkFormatted = videoLink.replace(/&.*/, '');
+
+            const response = await fetch(url + `?url=${videoLinkFormatted}`, {
+              method: 'GET',
+              mode: 'cors',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `JWT  ${localStorage.getItem('jwt_token')}`,
+              },
+            });
+            return await response.json();
+          }
+          getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc')
+            .then((phrases) => {
+              console.log(phrases);
+
+              const sortedPhrases= [];
+              for (let i = 0; i < phrases.length; i++) {
+                if (phrases[i].hasOwnProperty('editable')) {
+                  sortedPhrases.push({...phrases[i-1]});
+                  sortedPhrases.push({...phrases[i]});
+                  sortedPhrases.push({...phrases[i+1]})
+                }
+              }
+              start();
+              document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
+              document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
+              document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
+              document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data;
+            }).then(()=>{
+
+            document.querySelector('.add-translation__form').addEventListener('submit', (event) => {
+              event.preventDefault();
+              const data = document.querySelector('#phrase-translation').value;
+              const edition_id = document.querySelector('#phrase-translation').getAttribute('edition_id');
+
+              const translationData = {
+                edition_id,
+                data
+              };
+
+              async function postData(url, data) {
+
+                const response = await fetch(url, {
+                  method: 'POST',
+                  mode: 'cors',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `JWT  ${localStorage.getItem('jwt_token')}`
+                  },
+                  body: JSON.stringify(data)
+                });
+                return await response.json();
+              }
+              postData('https://subtite.it/phrase', translationData)
+                .then((result) => {
+                  console.log('result', result);
+                })
+
+            });
+          })
+
+            .catch((error)=> {
+              console.log('Failed to get phrases:', error);
+            })
+
+        })
+        .catch((error)=> {
+          console.log('Failed to sign in:', error);
+        })
       }
     }
   );
@@ -41,9 +111,9 @@ window.setTimeout(() => {
     document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
              <button class="add-translation__toggle-button">Hide</button>
            <form class="add-translation__form">
-              <p class="add-translation__text add-translation__prev-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis debitis, dicta eaque enim et impedit mmodi consequuntur eligeprovident teue aut autem culpa dolorum ducimus.</p>
-              <textarea class="add-translation__text add-translation__textarea">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis debitis, dicta eaque enim et impedit mmodi consequuntur eligeprovident teue aut autem culpa dolorum ducimus.</textarea>
-              <p class="add-translation__text add-translation__next-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut blanditiis debitis, dicta eaque enim et impedit mmodi consequuntur eligeprovident teue aut autem culpa dolorum ducimus.</p>
+              <p class="add-translation__text add-translation__prev-text"></p>
+              <textarea class="add-translation__text add-translation__textarea" id="phrase-translation"> </textarea>
+              <p class="add-translation__text add-translation__next-text"></p>
               <div class="add-translation__submit-button-container"><button class="add-translation__submit-button" type="submit">Submit</button></div>
           </form>
         </div>`);

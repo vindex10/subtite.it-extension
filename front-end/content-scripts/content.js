@@ -2,110 +2,66 @@ window.setTimeout(() => {
 
 
   browser.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      if( request.message === "start" ) {
-        console.log('Get connection!');
+    async function(request, sender, sendResponse) {
+       if (request.signInData) {
 
-      } else if (request.signInData) {
-        async function postData(url, data) {
+         try {
+           const dataToken = await postData('https://subtite.it/auth', request.signInData);
+           localStorage.setItem('jwt_token', dataToken.access_token);
 
-          const response = await fetch(url, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        });
-        return await response.json();
-      }
-      postData('https://subtite.it/auth', request.signInData)
-        .then((dataToken) => {
-          localStorage.setItem('jwt_token', dataToken.access_token);
+           try {
+             const phrases = await getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc');
 
-        })
-        .then(()=> {
+             console.log(phrases);
+             const phrasesExtended = [...phrases];
+             phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
+             phrasesExtended.push({data: "Script starts here:",  ref: 9000});
+             console.log(phrasesExtended);
 
-          async function getData(url, videoLink) {
+             const sortedPhrases= [];
+             for (let i = 0; i < phrases.length; i++) {
+               if (phrases[i].hasOwnProperty('editable')) {
+                 sortedPhrases.push({...phrasesExtended[i-1]});
+                 sortedPhrases.push({...phrasesExtended[i]});
+                 sortedPhrases.push({...phrasesExtended[i+1]})
+               }
+             }
+             document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
 
-            const videoLinkFormatted = videoLink.replace(/&.*/, '');
+             start();
 
-            const response = await fetch(url + `?url=${videoLinkFormatted}`, {
-              method: 'GET',
-              mode: 'cors',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `JWT  ${localStorage.getItem('jwt_token')}`,
-              },
-            });
-            return await response.json();
-          }
-          getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc')
-            .then((phrases) => {
-              console.log(phrases);
-              const phrasesExtended = [...phrases];
-              phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
-              phrasesExtended.push({data: "Script starts here:",  ref: 9000});
-              console.log(phrasesExtended);
+             document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
+             document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
+             document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
+             document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data;
 
-              const sortedPhrases= [];
-              for (let i = 0; i < phrases.length; i++) {
-                if (phrases[i].hasOwnProperty('editable')) {
-                  sortedPhrases.push({...phrasesExtended[i-1]});
-                  sortedPhrases.push({...phrasesExtended[i]});
-                  sortedPhrases.push({...phrasesExtended[i+1]})
-                }
-              }
-              document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
 
-              start();
+           } catch(error) {
+             console.log('Failed to get phrases:', error);
+           }
+         } catch(error) {
+           console.log('Failed to sign in:', error);
+         }
 
-              document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
-              document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
-              document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
-              document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data;
-            }).then(()=>{
+          document.querySelector('.add-translation__form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const data = document.querySelector('#phrase-translation').value;
+            const edition_id = document.querySelector('#phrase-translation').getAttribute('edition_id');
 
-            document.querySelector('.add-translation__form').addEventListener('submit', (event) => {
-              event.preventDefault();
-              const data = document.querySelector('#phrase-translation').value;
-              const edition_id = document.querySelector('#phrase-translation').getAttribute('edition_id');
+            const translationData = {
+              edition_id,
+              data
+            };
 
-              const translationData = {
-                edition_id,
-                data
-              };
+            try {
+              await authorizedPostData('https://subtite.it/phrase', translationData);
 
-              async function postData(url, data) {
-
-                const response = await fetch(url, {
-                  method: 'POST',
-                  mode: 'cors',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
-                  },
-                  body: JSON.stringify(data)
-                });
-                return await response;
-              }
-              postData('https://subtite.it/phrase', translationData)
-                .then(() => {
-                  document.querySelector('.add-translation__toggle-button').innerText = 'Show';
-                  document.querySelector('.add-translation__form').classList.add('hide-add-translation');
-                })
-
-            });
-          })
-
-            .catch((error)=> {
-              console.log('Failed to get phrases:', error);
-            })
-
-        })
-        .catch((error)=> {
-          console.log('Failed to sign in:', error);
-        })
+              document.querySelector('.add-translation__toggle-button').innerText = 'Show';
+              document.querySelector('.add-translation__form').classList.add('hide-add-translation');
+            } catch(error) {
+              console.log('Translation cannot be saved: ', error)
+            }
+          });
       }
     }
   );
@@ -113,7 +69,6 @@ window.setTimeout(() => {
   function start(){
     showEditor();
   }
-
 
   function showEditor() {
     document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
@@ -129,16 +84,56 @@ window.setTimeout(() => {
           </form>
         </div>`);
 
-        document.querySelector('.add-translation__toggle-button').addEventListener('click', (event)=> {
+      document.querySelector('.add-translation__toggle-button').addEventListener('click', (event)=> {
 
-          if(!document.querySelector('.add-translation__form').classList.contains('hide-add-translation')) {
-            event.target.innerText = 'Show';
-            document.querySelector('.add-translation__form').classList.add('hide-add-translation');
-          } else {
-            event.target.innerText = 'Hide';
-            document.querySelector('.add-translation__form').classList.remove('hide-add-translation');
-          }
-        })
+        if(!document.querySelector('.add-translation__form').classList.contains('hide-add-translation')) {
+          event.target.innerText = 'Show';
+          document.querySelector('.add-translation__form').classList.add('hide-add-translation');
+        } else {
+          event.target.innerText = 'Hide';
+          document.querySelector('.add-translation__form').classList.remove('hide-add-translation');
+        }
+      })
+  }
+
+  async function postData(url, data) {
+
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    return await response.json();
+  }
+
+  async function authorizedPostData(url, data) {
+
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
+      },
+      body: JSON.stringify(data)
+    });
+    return await response;
+  }
+
+  async function getData(url, videoLink) {
+    const videoLinkFormatted = videoLink.replace(/&.*/, '');
+    const response = await fetch(url + `?url=${videoLinkFormatted}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT  ${localStorage.getItem('jwt_token')}`,
+      },
+    });
+    return await response.json();
   }
 
 

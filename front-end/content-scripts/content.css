@@ -39,10 +39,14 @@
 
 .add-translation__submit-button-container {
     text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .add-translation__submit-button,
-.add-translation__toggle-button {
+.add-translation__toggle-button,
+.add-translation__download-button {
     margin-top: .5em;
     cursor: pointer;
     padding: 1em 2em;
@@ -53,7 +57,8 @@
     border: none;
 }
 .add-translation__submit-button:hover,
-.add-translation__toggle-button:hover {
+.add-translation__toggle-button:hover,
+.add-translation__download-button:hover {
     background-color: #820000;
 }
 

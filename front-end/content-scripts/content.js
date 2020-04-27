@@ -87,11 +87,12 @@ window.setTimeout(() => {
                   },
                   body: JSON.stringify(data)
                 });
-                return await response.json();
+                return await response;
               }
               postData('https://subtite.it/phrase', translationData)
-                .then((result) => {
-                  console.log('result', result);
+                .then(() => {
+                  document.querySelector('.add-translation__toggle-button').innerText = 'Show';
+                  document.querySelector('.add-translation__form').classList.add('hide-add-translation');
                 })
 
             });
@@ -121,7 +122,10 @@ window.setTimeout(() => {
               <p class="add-translation__text add-translation__prev-text"></p>
               <textarea class="add-translation__text add-translation__textarea" id="phrase-translation"> </textarea>
               <p class="add-translation__text add-translation__next-text"></p>
-              <div class="add-translation__submit-button-container"><button class="add-translation__submit-button" type="submit">Submit</button></div>
+              <div class="add-translation__submit-button-container">
+                <button class="add-translation__download-button">Download Script</button>
+                <button class="add-translation__submit-button" type="submit">Submit</button>
+              </div>
           </form>
         </div>`);
 

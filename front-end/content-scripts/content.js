@@ -12,11 +12,9 @@ window.setTimeout(() => {
            try {
              const phrases = await getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc');
 
-             console.log(phrases);
              const phrasesExtended = [...phrases];
              phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
-             phrasesExtended.push({data: "Script starts here:",  ref: 9000});
-             console.log(phrasesExtended);
+             phrasesExtended.push({data: "The end of the script.",  ref: 9000});
 
              const sortedPhrases= [];
              for (let i = 0; i < phrases.length; i++) {

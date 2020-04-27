@@ -43,16 +43,23 @@ window.setTimeout(() => {
           getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc')
             .then((phrases) => {
               console.log(phrases);
+              const phrasesExtended = [...phrases];
+              phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
+              phrasesExtended.push({data: "Script starts here:",  ref: 9000});
+              console.log(phrasesExtended);
 
               const sortedPhrases= [];
               for (let i = 0; i < phrases.length; i++) {
                 if (phrases[i].hasOwnProperty('editable')) {
-                  sortedPhrases.push({...phrases[i-1]});
-                  sortedPhrases.push({...phrases[i]});
-                  sortedPhrases.push({...phrases[i+1]})
+                  sortedPhrases.push({...phrasesExtended[i-1]});
+                  sortedPhrases.push({...phrasesExtended[i]});
+                  sortedPhrases.push({...phrasesExtended[i+1]})
                 }
               }
+              document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
+
               start();
+
               document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
               document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
               document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
@@ -76,7 +83,7 @@ window.setTimeout(() => {
                   mode: 'cors',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `JWT  ${localStorage.getItem('jwt_token')}`
+                    'Authorization': `JWT ${localStorage.getItem('jwt_token')}`
                   },
                   body: JSON.stringify(data)
                 });

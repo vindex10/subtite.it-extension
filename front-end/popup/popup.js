@@ -24,22 +24,6 @@ function ready() {
   })();
 
 
-  function confirmedToTranslate() {
-    browser.tabs.query({currentWindow: true, active: true}, function (tabs){
-      var activeTab = tabs[0];
-      browser.tabs.sendMessage(activeTab.id, {"message": "start"});
-    });
-  }
-
-  let disableConfirmationButton = false;
-  document.querySelector('.main__button-confirm').addEventListener('click', () => {
-      if(!disableConfirmationButton) {
-        confirmedToTranslate();
-        disableConfirmationButton = true;
-      }
-
-  });
-
   // SignIn Logic:
     let signInData;
     document.querySelector('#signin-form').addEventListener('submit', () => {

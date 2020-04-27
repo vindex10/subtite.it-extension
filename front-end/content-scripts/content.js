@@ -40,13 +40,11 @@ window.setTimeout(() => {
             });
             return await response.json();
           }
-          getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc')
+          getData('https://subtite.it/phrase', window.location.href)
             .then((phrases) => {
-              console.log(phrases);
               const phrasesExtended = [...phrases];
               phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
-              phrasesExtended.push({data: "Script starts here:",  ref: 9000});
-              console.log(phrasesExtended);
+              phrasesExtended.push({data: "End of the script.",  ref: 9000});
 
               const sortedPhrases= [];
               for (let i = 0; i < phrases.length; i++) {
@@ -87,7 +85,7 @@ window.setTimeout(() => {
                   },
                   body: JSON.stringify(data)
                 });
-                return await response;
+                return response;
               }
               postData('https://subtite.it/phrase', translationData)
                 .then(() => {
@@ -140,7 +138,6 @@ window.setTimeout(() => {
           }
         })
   }
-
 
 
 }, 2000);

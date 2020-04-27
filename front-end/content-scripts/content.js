@@ -130,7 +130,7 @@ window.setTimeout(() => {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `JWT  ${localStorage.getItem('jwt_token')}`,
+        'Authorization': `JWT ${localStorage.getItem('jwt_token')}`,
       },
     });
     return await response.json();

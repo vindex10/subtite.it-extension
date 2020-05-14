@@ -6,6 +6,7 @@
     <meta name="description" content="Browser extension for creating subtitiles">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../assets/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
 
@@ -13,31 +14,34 @@
 <body>
     <div class="popup-content" id="popup-landing">
         <header class="header">
-            <div class="header__logo">
-                <span class="header__logo-title">Subtite.it</span>
-            </div>
-            <div class="header__auth">
-                <span class="header__auth-link">Sign In</span>
-            </div>
+          <div class="toggle-container">
+            <input type="checkbox" id="switch" name="theme" /><label for="switch"></label>
+          </div>
+          <div class="toggle-container">
+            <span>Toggle subtitles</span>
+          </div>
         </header>
         <main class="main">
             <div class="main__content">
-              How about translating a short paragraph for this video?
+              Ready to contribute? Join Subtitle community!
+              <div class="header__auth" id="auth-buttons">
+                <button class="header__auth-link" id="log-in">Log In</button>
+                <button class="header__auth-link">Sign Up</button>
+              </div>
             </div>
         </main>
     </div>
 
     <div class="popup-content" id="popup-login">
-        <header class="header">
+        <header class="header-login">
             <div class="header__logo">
-                <span class="header__logo-title">Subtite.it</span>
+                <span class="header__logo-title">Log In</span>
             </div>
             <div class="header__auth">
-                <span class="header__back-link" >Back</span>
+                <span class="header__back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
             </div>
         </header>
         <main class="main-login">
-            <h4 class="main__form-title">Sign In</h4>
             <form class="main__form" id="signin-form" autoComplete="on">
                 <input
                         name="useremail"
@@ -54,10 +58,22 @@
                         type="password"
                         placeholder="Password"
                 />
-                <button
-                        class="main__form-submit"
-                        type="submit">Sign In</button>
             </form>
+            <section class="main__section_find">
+              <div class='social'>
+                <div class="social facebook">
+                  <a href="https://www.facebook.com/rolskaolena?ref=bookmarks" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                </div>
+                <div class="social google">
+                  <a href="https://twitter.com/vkozulya" target="_blank"><i class="fa fa-google"></i></a>
+                </div>
+                <div class="social github">
+                  <a href="https://www.instagram.com/zmiyuchkaa/" target="_blank"><i class="fa fa-github"></i></a>
+                </div>
+                <button class="main__form-submit" type="submit">Log In</button>
+              </div>
+            </section>
+            
         </main>
     </div>
 

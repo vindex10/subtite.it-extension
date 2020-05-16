@@ -15,29 +15,29 @@ function ready() {
     logInPopUp.style.display = 'none';
     authPopUp.style.display = 'none';
 
-    AuthPageLink.addEventListener('click', ()=>{
+    AuthPageLink.addEventListener('click', ()=> {
       landIngPopUp.style.display = 'none';
       authPopUp.style.display = 'block';
       logInPopUp.style.display = 'none';
     });
 
-    loginPageLink.addEventListener('click', ()=>{
+    loginPageLink.addEventListener('click', ()=> {
       landIngPopUp.style.display = 'none';
       authPopUp.style.display = 'none';
       logInPopUp.style.display = 'block';
     });
 
-    backHomePageLink.addEventListener('click', ()=>{
+    const clickHandler = () => {  
       landIngPopUp.style.display = 'block';
       authPopUp.style.display = 'none';
-      logInPopUp.style.display = 'none';
-    });
+      logInPopUp.style.display = 'none'; 
+    }
 
-    backHome.addEventListener('click', ()=>{
-      landIngPopUp.style.display = 'block';
-      authPopUp.style.display = 'none';
-      logInPopUp.style.display = 'none';
-    });
+    backHomePageLink.addEventListener('click', () => clickHandler());
+    backHome.addEventListener('click', ()=> clickHandler());
+
+    
+    
 
   })();
 

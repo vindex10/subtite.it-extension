@@ -6,7 +6,6 @@
     <meta name="description" content="Browser extension for creating subtitiles">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../assets/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
 
@@ -25,19 +24,19 @@
             <div class="main__content">
               Ready to contribute? Join Subtitle community!
               <div class="header__auth" id="auth-buttons">
-                <button class="header__auth-link" id="log-in">Log In</button>
+                <button class="header__login-link" id="log-in">Log In</button>
                 <button class="header__auth-link">Sign Up</button>
               </div>
             </div>
         </main>
     </div>
 
-    <div class="popup-content" id="popup-login">
+    <div class="popup-content" id="popup-auth">
         <header class="header-login">
             <div class="header__logo">
-                <span class="header__logo-title">Log In</span>
+                <span class="header__logo-title">New User</span>
             </div>
-            <div class="header__auth">
+            <div class="header__back">
                 <span class="header__back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
             </div>
         </header>
@@ -62,20 +61,63 @@
             <section class="main__section_find">
               <div class='social'>
                 <div class="social facebook">
-                  <a href="https://www.facebook.com/rolskaolena?ref=bookmarks" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                  <a href="" target="_blank"><img class="icon-facebook" src="../assets/img/icons/facebook-icon.png"></a>
                 </div>
                 <div class="social google">
-                  <a href="https://twitter.com/vkozulya" target="_blank"><i class="fa fa-google"></i></a>
+                  <a href="" target="_blank"><img class="icon-google" src="../assets/img/icons/google-icon.png"></a>
                 </div>
                 <div class="social github">
-                  <a href="https://www.instagram.com/zmiyuchkaa/" target="_blank"><i class="fa fa-github"></i></a>
+                  <a href="" target="_blank"><img class="icon-github" src="../assets/img/icons/github.png"></a>
                 </div>
-                <button class="main__form-submit" type="submit">Log In</button>
+                <button class="main__form-submit" id="signin-form" type="submit">Sign Up</button>
               </div>
             </section>
-            
         </main>
     </div>
+
+    <div class="popup-content" id="popup-login">
+      <header class="header-login">
+          <div class="header__logo">
+              <span class="header__logo-title">New User</span>
+          </div>
+          <div class="header__back">
+              <span class="back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
+          </div>
+      </header>
+      <main class="main-login">
+          <form class="main__form" id="signin-form" autoComplete="on">
+              <input
+                      name="useremail"
+                      id="useremail"
+                      class="main__form-input"
+                      type="email" placeholder="Email"
+                      required
+                      autoFocus/>
+              <input
+                      required
+                      name="password"
+                      id="password"
+                      class="main__form-input"
+                      type="password"
+                      placeholder="Password"
+              />
+          </form>
+          <section class="main__section_find">
+            <div class='social'>
+              <div class="social facebook">
+                <a href="" target="_blank"><img class="icon-facebook" src="../assets/img/icons/facebook-icon.png"></a>
+              </div>
+              <div class="social google">
+                <a href="" target="_blank"><img class="icon-google" src="../assets/img/icons/google-icon.png"></a>
+              </div>
+              <div class="social github">
+                <a href="" target="_blank"><img class="icon-github" src="../assets/img/icons/github.png"></a>
+              </div>
+              <button class="main__form-submit" id="signin-form" type="submit">Sign Up</button>
+            </div>
+          </section>
+      </main>
+  </div>
 
     <script src="popup.js"></script>
 

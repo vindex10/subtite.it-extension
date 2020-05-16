@@ -125,7 +125,6 @@ transition-delay: 0 !important;
   padding: 1.5em 1.5em;
   justify-content: space-between;
   align-items: right;
-  /* margin-top: -50px; */
 }
 
 .header__logo {
@@ -137,11 +136,10 @@ transition-delay: 0 !important;
 
 .header__logo-title {
   margin-right: 80px;
-  width: 50px;
+  width: 75px;
   margin: 0;
   padding: 0;
 }
-
 
 .header__logo-image {
   width: 50px;
@@ -151,6 +149,13 @@ transition-delay: 0 !important;
   align-items: center;
   display: flex;
   justify-content: space-around;
+}
+
+.header__back {
+  align-items: right;
+  margin: 0;
+  margin-right: -24px;
+  padding: 0;
 }
 
 #auth-buttons {
@@ -170,15 +175,11 @@ transition-delay: 0 !important;
   padding-bottom: 4px;
 }
 
-/* .social {
-  padding-left: 2px;
-} */
 
 .social a {
     text-align: center;
     float: left;
     margin: 0 5px 5px 0;
-    /* padding: 6px; */
 }
 
 .social a i {
@@ -190,7 +191,7 @@ transition-delay: 0 !important;
 }
 
 
-.header__auth-link {
+.header__auth-link, .header__login-link {
     cursor: pointer;
     background-color:cornflowerblue;
     display: inline-block;
@@ -199,15 +200,35 @@ transition-delay: 0 !important;
     width: 6em;
 }
 
-.header__back-link {
+.header__back-link, .back-link {
   padding: 0;
   margin: 0;
 }
 
 #back-arrow {
-  width: 30%;
+  width: 20%;
   cursor: pointer;
-  /* margin-right: -100px; */
+}
+
+.icon-facebook {
+  width: 40px;
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.icon-github {
+  width: 30px;
+  cursor: pointer;
+  margin: 17px 0;
+  padding: 0;
+}
+
+.icon-google {
+  width: 40px;
+  cursor: pointer;
+  margin: 12px 15px 10px 10px;
+  padding: 0;
 }
 
 #log-in {

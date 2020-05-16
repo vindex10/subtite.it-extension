@@ -3,43 +3,43 @@ window.setTimeout(() => {
 
   browser.runtime.onMessage.addListener(
     async function(request, sender, sendResponse) {
-       if (request.signInData) {
+      if (request.signInData) {
 
-         try {
-           const dataToken = await postData('https://subtite.it/auth', request.signInData);
-           localStorage.setItem('jwt_token', dataToken.access_token);
+        try {
+          const dataToken = await postData('https://subtite.it/auth', request.signInData);
+          localStorage.setItem('jwt_token', dataToken.access_token);
 
-           try {
-             const phrases = await getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc');
+          try {
+            const phrases = await getData('https://subtite.it/phrase', 'https://www.youtube.com/watch?v=F9ei40nxKDc');
 
-             const phrasesExtended = [...phrases];
-             phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
-             phrasesExtended.push({data: "The end of the script.",  ref: 9000});
+            const phrasesExtended = [...phrases];
+            phrasesExtended.unshift({data: "Script starts here:", ref: 9000});
+            phrasesExtended.push({data: "The end of the script.",  ref: 9000});
 
-             const sortedPhrases= [];
-             for (let i = 0; i < phrases.length; i++) {
-               if (phrases[i].hasOwnProperty('editable')) {
-                 sortedPhrases.push({...phrasesExtended[i-1]});
-                 sortedPhrases.push({...phrasesExtended[i]});
-                 sortedPhrases.push({...phrasesExtended[i+1]})
-               }
-             }
-             document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
+            const sortedPhrases= [];
+            for (let i = 0; i < phrases.length; i++) {
+              if (phrases[i].hasOwnProperty('editable')) {
+                sortedPhrases.push({...phrasesExtended[i-1]});
+                sortedPhrases.push({...phrasesExtended[i]});
+                sortedPhrases.push({...phrasesExtended[i+1]})
+              }
+            }
+            document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
 
-             start();
+            start();
 
-             document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
-             document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
-             document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
-             document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data;
+            document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
+            document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
+            document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
+            document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data;
 
 
-           } catch(error) {
-             console.log('Failed to get phrases:', error);
-           }
-         } catch(error) {
-           console.log('Failed to sign in:', error);
-         }
+          } catch(error) {
+            console.log('Failed to get phrases:', error);
+          }
+        } catch(error) {
+          console.log('Failed to sign in:', error);
+        }
 
           document.querySelector('.add-translation__form').addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -70,8 +70,8 @@ window.setTimeout(() => {
 
   function showEditor() {
     document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
-             <button class="add-translation__toggle-button">Hide</button>
-           <form class="add-translation__form">
+            <button class="add-translation__toggle-button">Hide</button>
+            <form class="add-translation__form">
               <p class="add-translation__text add-translation__prev-text"></p>
               <textarea class="add-translation__text add-translation__textarea" id="phrase-translation"> </textarea>
               <p class="add-translation__text add-translation__next-text"></p>

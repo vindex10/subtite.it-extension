@@ -2,8 +2,10 @@ window.addEventListener('load', ready);
 
 function ready() {
 
+
   // Toggle Landing and LogIn PopUp Blocks;
   (function() {
+
     const authPopUp = document.querySelector('#popup-auth');
     const logInPopUp = document.querySelector('#popup-login');
     const landIngPopUp = document.querySelector('#popup-landing');
@@ -12,16 +14,17 @@ function ready() {
     const backHomePageLink = document.querySelector('.header__back-link');
     const backHome = document.querySelector('.back-link');
 
+
     logInPopUp.style.display = 'none';
     authPopUp.style.display = 'none';
 
-    AuthPageLink.addEventListener('click', ()=> {
+    AuthPageLink.addEventListener('click', () => {
       landIngPopUp.style.display = 'none';
       authPopUp.style.display = 'block';
       logInPopUp.style.display = 'none';
     });
 
-    loginPageLink.addEventListener('click', ()=> {
+    loginPageLink.addEventListener('click', () => {
       landIngPopUp.style.display = 'none';
       authPopUp.style.display = 'none';
       logInPopUp.style.display = 'block';
@@ -34,10 +37,7 @@ function ready() {
     }
 
     backHomePageLink.addEventListener('click', () => clickHandler());
-    backHome.addEventListener('click', ()=> clickHandler());
-
-    
-    
+    backHome.addEventListener('click', () => clickHandler());
 
   })();
 
@@ -54,13 +54,12 @@ function ready() {
         password
       };
 
-      browser.tabs.query({currentWindow: true, active: true}, function (tabs){
+      browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
         var activeTab = tabs[0];
         browser.tabs.sendMessage(activeTab.id, {"signInData": signInData});
       });
     });
   })();
-
 
 }
 

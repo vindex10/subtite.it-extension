@@ -3,6 +3,7 @@ window.setTimeout(() => {
 
   browser.runtime.onMessage.addListener(
     async function(request, sender, sendResponse) {
+      const checkbox = document.querySelector("#switch")
       if (request.signInData) {
 
         try {

@@ -27,10 +27,11 @@
   ],
 
   "permissions": [
-    "activeTab",
+    "tabs",
     "storage",
     "webRequest",
-    "https://subtite.it/*"
+    "https://subtite.it/*",
+    "*://localhost/*"
   ],
 
 

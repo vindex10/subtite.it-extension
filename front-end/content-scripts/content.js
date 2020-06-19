@@ -1,4 +1,10 @@
-let SERVER_NAME = "https://subtite.it"
+browser.runtime.onMessage.addListener((request) => {
+    if (request.action == "triggerEdit") {
+      triggerEditor(request.sortedPhrases);
+    }
+});
+
+let SERVER_NAME = "https://subtite.it:3000"
 //let SERVER_NAME = "http://localhost:5000"
 
 function start(){
@@ -61,9 +67,3 @@ function triggerEditor(sortedPhrases) {
       }
     });
 }
-
-browser.runtime.onMessage.addListener(request => {
-    if (request.action == "triggerEdit") {
-      triggerEditor(request.sortedPhrases);
-    }
-});

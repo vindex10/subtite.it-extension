@@ -1,4 +1,4 @@
-let SERVER_NAME = "https://subtite.it"
+let SERVER_NAME = "https://subtite.it:3000"
 //let SERVER_NAME = "http://localhost:5000"
 
 let userIdentity = null;
@@ -10,11 +10,20 @@ function ready() {
 
 window.onload = ready;
 
+async function callOnActiveTab(callback) {
+    browser.tabs.query({currentWindow: true, active: true}).then((tabs) => {
+        for (var tab of tabs) {
+            callback(tab);
+        }
+    })
+}
+
 function init_router() {
 
   const authPopUp = document.querySelector('#popup-auth');
   const logInPopUp = document.querySelector('#popup-login');
   const landIngPopUp = document.querySelector('#popup-landing');
+  const profilePopUp = document.querySelector('#popup-profile');
   const AuthPageLink = document.querySelector('.header__auth-link');
   const loginPageLink = document.querySelector('.header__login-link');
   const backHomePageLink = document.querySelector('.header__back-link');
@@ -23,6 +32,7 @@ function init_router() {
 
   logInPopUp.style.display = 'none';
   authPopUp.style.display = 'none';
+  profilePopUp.style.display = "none";
 
   AuthPageLink.addEventListener('click', () => {
     landIngPopUp.style.display = 'none';
@@ -44,6 +54,11 @@ function init_router() {
 
   backHomePageLink.addEventListener('click', () => clickHandler());
   backHome.addEventListener('click', () => clickHandler());
+
+  const profileTriggerEdit = document.querySelector('#popup-profile .triggerEdit');
+  profileTriggerEdit.addEventListener('click', async () => {
+    await callOnActiveTab(triggerEdit);
+  });
 
 }
 
@@ -93,14 +108,21 @@ async function getAndPreparePhrases(uri) {
   return sortedPhrases;
 }
 
-async function onLogin() {
-  document.querySelector("#popup-landing .welcome").innerHTML = "Hello, " + (userIdentity.full_name || userIdentity.username) + "!";
+async function triggerEdit(activeTab) {
   try {
-    sortedPhrases = await getAndPreparePhrases('https://www.youtube.com/watch?v=F9ei40nxKDc')
-    await browser.tabs.sendMessage(browser.tabs.activeTab.id, {action: "triggerEdit", sortedPhrases: sortedPhrases});
+    let sortedPhrases = await getAndPreparePhrases(activeTab.url)
+    await browser.tabs.sendMessage(activeTab.id, {action: "triggerEdit", sortedPhrases: sortedPhrases});
   } catch(error) {
     console.log('Failed to get phrases:', error);
   }
+}
+
+async function onLogin() {
+  document.querySelector('#popup-auth').style.display = "none";
+  document.querySelector('#popup-login').style.display = "none";
+  document.querySelector('#popup-landing').style.display = "none";
+  document.querySelector('#popup-profile').style.display = "block";
+  document.querySelector("#popup-profile .header__logo-title").innerHTML = "Hello, " + (userIdentity.full_name || userIdentity.username) + "!";
 }
 
 async function submitPhrase(translationData) {

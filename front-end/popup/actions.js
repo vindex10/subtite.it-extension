@@ -1,5 +1,7 @@
 /* global browser */
 
+// Split this file into smaller ones when you feel like it :)
+
 'use strict'
 
 import * as User from './user.js' // {Identity}

@@ -1,15 +1,6 @@
-browser.runtime.onMessage.addListener((request) => {
-    if (request.action == "triggerEdit") {
-      triggerEditor(request.sortedPhrases);
-    }
-});
+"use strict";
+// import {submitPhrase} as Requests from './requests.js'
 
-let SERVER_NAME = "https://subtite.it:3000"
-//let SERVER_NAME = "http://localhost:5000"
-
-function start(){
-  showEditor();
-}
 
 function showEditor() {
   document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
@@ -40,7 +31,7 @@ function showEditor() {
 function triggerEditor(sortedPhrases) {
     document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
 
-    start();
+    showEditor();
 
     document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
     document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
@@ -58,7 +49,7 @@ function triggerEditor(sortedPhrases) {
       };
 
       try {
-        browser.runtime.sendMessage({translationData: translationData, action: "submitPhrase"});
+        await Requests.submitPhrase(translationData);
 
         document.querySelector('.add-translation__toggle-button').innerText = 'Show';
         document.querySelector('.add-translation__form').classList.add('hide-add-translation');
@@ -67,3 +58,9 @@ function triggerEditor(sortedPhrases) {
       }
     });
 }
+
+browser.runtime.onMessage.addListener((request) => {
+    if (request.action == "triggerEdit") {
+      triggerEditor(request.sortedPhrases);
+    }
+});

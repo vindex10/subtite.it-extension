@@ -1,7 +1,9 @@
-import * as Router from './router.js'  // {initRouter}
-import * as Actions from './actions.js'  // {initSignIn}
+'use strict'
+
+import * as Router from './router.js' // { initRouter }
+import * as Actions from './actions.js' // { initSignIn }
 
 window.onload = async () => {
-  await Router.initRouter();
-  await Actions.initSignIn();
-};
+  await Router.initRouter()
+  await Actions.initSignIn()
+}

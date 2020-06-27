@@ -1,31 +1,30 @@
-"use strict";
-
-export {Identity, currentUser}
+'use strict'
 
 class UserIdentity {
-    constructor() {
-        this.__identity = null;
-    }
+  constructor () {
+    this.__identity = null
+  }
 
-    set(identity) {
-        if (this.__identity !== null) {
-            console.log("Warning: identity is not pure. Missing call to `flush`.");
-        }
-        this.__identity = identity;
+  set (identity) {
+    if (this.__identity !== null) {
+      console.log('Warning: identity is not pure. Missing call to `flush`.')
     }
+    this.__identity = identity
+  }
 
-    get() {
-        return this.__identity;
-    }
+  get () {
+    return this.__identity
+  }
 
-    flush(identity) {
-        this.__identity = null;
-    }
+  flush (identity) {
+    this.__identity = null
+  }
 }
 
-let Identity = new UserIdentity();
+const Identity = new UserIdentity()
 
-function currentUser() {
-    return Identity.get();
+function currentUser () {
+  return Identity.get()
 }
 
+export { Identity, currentUser }

@@ -1,8 +1,10 @@
-"use strict";
+/* global Requests, browser */
+
+'use strict'
+
 // import {submitPhrase} as Requests from './requests.js'
 
-
-function showEditor() {
+function showEditor () {
   document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
           <button class="add-translation__toggle-button">Hide</button>
           <form class="add-translation__form">
@@ -14,53 +16,52 @@ function showEditor() {
               <button class="add-translation__submit-button" type="submit">Submit</button>
             </div>
         </form>
-      </div>`);
+      </div>`)
 
-  document.querySelector('.add-translation__toggle-button').addEventListener('click', (event)=> {
-
-    if(!document.querySelector('.add-translation__form').classList.contains('hide-add-translation')) {
-      event.target.innerText = 'Show';
-      document.querySelector('.add-translation__form').classList.add('hide-add-translation');
+  document.querySelector('.add-translation__toggle-button').addEventListener('click', (event) => {
+    if (!document.querySelector('.add-translation__form').classList.contains('hide-add-translation')) {
+      event.target.innerText = 'Show'
+      document.querySelector('.add-translation__form').classList.add('hide-add-translation')
     } else {
-      event.target.innerText = 'Hide';
-      document.querySelector('.add-translation__form').classList.remove('hide-add-translation');
+      event.target.innerText = 'Hide'
+      document.querySelector('.add-translation__form').classList.remove('hide-add-translation')
     }
   })
 }
 
-function triggerEditor(sortedPhrases) {
-    document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000;
+function triggerEditor (sortedPhrases) {
+  document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
 
-    showEditor();
+  showEditor()
 
-    document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data;
-    document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data;
-    document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`);
-    document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data;
+  document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data
+  document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data
+  document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`)
+  document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data
 
-    document.querySelector('.add-translation__form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const data = document.querySelector('#phrase-translation').value;
-      const edition_id = document.querySelector('#phrase-translation').getAttribute('edition_id');
+  document.querySelector('.add-translation__form').addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const data = document.querySelector('#phrase-translation').value
+    const editionId = document.querySelector('#phrase-translation').getAttribute('edition_id')
 
-      const translationData = {
-        edition_id,
-        data
-      };
+    const translationData = {
+      editionId,
+      data
+    }
 
-      try {
-        await Requests.submitPhrase(translationData);
+    try {
+      await Requests.submitPhrase(translationData)
 
-        document.querySelector('.add-translation__toggle-button').innerText = 'Show';
-        document.querySelector('.add-translation__form').classList.add('hide-add-translation');
-      } catch(error) {
-        console.log('Translation cannot be saved: ', error)
-      }
-    });
+      document.querySelector('.add-translation__toggle-button').innerText = 'Show'
+      document.querySelector('.add-translation__form').classList.add('hide-add-translation')
+    } catch (error) {
+      console.log('Translation cannot be saved: ', error)
+    }
+  })
 }
 
 browser.runtime.onMessage.addListener((request) => {
-    if (request.action == "triggerEdit") {
-      triggerEditor(request.sortedPhrases);
-    }
-});
+  if (request.action === 'triggerEdit') {
+    triggerEditor(request.sortedPhrases)
+  }
+})

@@ -4,41 +4,239 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+html {
+  height: 100%;
+  font-family: 'Montserrat';
+
+  display: grid;
+  align-items: center;
+  justify-items: center;
+
+  --bg: #FCFCFC;
+  --bg-panel: #EBEBEB;
+  --color-headings: #0077FF;
+  --color-text: #333333;
+}
+
+html[data-theme='dark'] {
+  --bg: #333333;
+  --bg-panel: #434343;
+  --color-headings: #3694FF;
+  --color-text: #B5B5B5;
+}
+
+body {
+  background-color: var(--bg);
+}
+
+.container {
+  background-color: var(--bg-panel);
+  margin: 5em;
+  padding: 5em;
+  border-radius: 15px;
+
+  display: grid;
+  grid-template-columns: 80% auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+      "title switch"
+      "content content";
+
+}
+
+h1 {
+  margin: 0;
+  color: var(--color-headings);
+}
+
+p {
+  color: var(--color-text);
+  grid-area: content;
+  font-size: 1.1em;
+  line-height: 1.8em;
+  margin-top: 2em;
+}
+
+input[type=checkbox]{
+height: 0;
+width: 0;
+visibility: hidden;
+}
+
+label {
+cursor: pointer;
+text-indent: -9999px;
+width: 52px;
+height: 27px;
+background: grey;
+float: right;
+border-radius: 100px;
+position: relative;
+}
+
+label:after {
+content: '';
+position: absolute;
+top: 3px;
+left: 3px;
+width: 20px;
+height: 20px;
+background: #fff;
+border-radius: 90px;
+transition: 0.3s;
+}
+
+input:checked + label {
+background: var(--color-headings);
+}
+
+input:checked + label:after {
+left: calc(100% - 5px);
+transform: translateX(-100%);
+}
+
+label:active:after {
+width: 45px;
+}
+
+html.transition,
+html.transition *,
+html.transition *:before,
+html.transition *:after {
+transition: all 750ms !important;
+transition-delay: 0 !important;
+}
+
 .popup-content {
     width: 350px;
     box-shadow: 2px 2px 6px #868686;;
     background-color: #ededed;
 }
 
+.welcome {
+    padding: 1em;
+}
+
 .header {
     display: flex;
     padding: 1.5em 1.5em;
-    background-color: #8c0000;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
+}
+
+.header-login {
+  display: flex;
+  padding: 1.5em 1.5em;
+  justify-content: space-between;
+  align-items: right;
 }
 
 .header__logo {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    margin: auto;
+    align-items: right;
 }
 
 .header__logo-title {
-    color: #ffffff;
-    font-weight: 700;
+  margin-right: 80px;
+  width: 75px;
+  margin: 0;
+  padding: 0;
 }
 
 .header__logo-image {
-    width: 50px;
+  width: 50px;
 }
 
-.header__auth-link,
-.header__back-link {
+.header__auth {
+  align-items: center;
+  display: flex;
+  justify-content: space-around;
+}
+
+.header__back {
+  align-items: right;
+  margin: 0;
+  margin-right: -24px;
+  padding: 0;
+}
+
+#auth-buttons {
+  margin-top: 20px;
+}
+
+.main__section_find {
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.main__section__h2_find {
+  text-align: center;
+  font-size: 15px;
+  padding-top: 2px;
+  padding-bottom: 4px;
+}
+
+
+.social a {
+    text-align: center;
+    float: left;
+    margin: 0 5px 5px 0;
+}
+
+.social a i {
+  font-size: 25px;
+  font-weight: 700;
+  color: black;
+  display: inline-block;
+  width: 50px;
+}
+
+
+.header__auth-link, .header__login-link {
     cursor: pointer;
-    text-decoration: underline;
+    background-color:cornflowerblue;
     display: inline-block;
-    color: #ffffff;
+    padding: 16px;
+    border-radius: 6px;
+    width: 6em;
+}
+
+.header__back-link, .back-link {
+  padding: 0;
+  margin: 0;
+}
+
+#back-arrow {
+  width: 20%;
+  cursor: pointer;
+}
+
+.icon-facebook {
+  width: 40px;
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.icon-github {
+  width: 30px;
+  cursor: pointer;
+  margin: 17px 0;
+  padding: 0;
+}
+
+.icon-google {
+  width: 40px;
+  cursor: pointer;
+  margin: 12px 15px 10px 10px;
+  padding: 0;
+}
+
+#log-in {
+  background-color: rgb(108, 192, 136);
 }
 
 .header__auth-link:hover,
@@ -53,7 +251,7 @@ body {
     height: 300px;
 }
 
-.main{
+.main {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -79,8 +277,8 @@ body {
 }
 
 .main__content {
-    font-size: 18px;
-    padding: 50px 0;
+    font-size: 15px;
+    padding: 50px 0px
 }
 
 /* SIGN IN */
@@ -113,11 +311,12 @@ body {
     cursor: pointer;
     padding: 1em 2em;
     outline: none;
-    background-color: #c00000;
+    background-color: #32a16a;
     color: #ffffff;
     border: none;
+    border-radius: 8px;
 }
 
 .main__form-submit:hover {
-    background-color: #820000;
+    background-color: #5fbda5;
 }

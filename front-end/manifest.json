@@ -21,16 +21,17 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content-scripts/content.js"],
+      "js": ["content-scripts/requests.js", "content-scripts/content.js"],
       "css": ["content-scripts/content.css"]
     }
   ],
 
   "permissions": [
-    "activeTab",
+    "tabs",
     "storage",
     "webRequest",
-    "https://subtite.it/*"
+    "https://subtite.it/*",
+    "*://localhost/*"
   ],
 
 

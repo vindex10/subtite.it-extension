@@ -13,31 +13,34 @@
 <body>
     <div class="popup-content" id="popup-landing">
         <header class="header">
-            <div class="header__logo">
-                <span class="header__logo-title">Subtite.it</span>
-            </div>
-            <div class="header__auth">
-                <span class="header__auth-link">Sign In</span>
-            </div>
+          <div class="toggle-container">
+            <input type="checkbox" id="switch" name="theme" /><label for="switch"></label>
+          </div>
+          <div class="toggle-container">
+            <span>Toggle subtitles</span>
+          </div>
         </header>
         <main class="main">
             <div class="main__content">
-              How about translating a short paragraph for this video?
+              Ready to contribute? Join Subtitle community!
+              <div class="header__auth" id="auth-buttons">
+                <button class="header__login-link" id="log-in">Log In</button>
+                <button class="header__auth-link">Sign Up</button>
+              </div>
             </div>
         </main>
     </div>
 
     <div class="popup-content" id="popup-login">
-        <header class="header">
+        <header class="header-login">
             <div class="header__logo">
-                <span class="header__logo-title">Subtite.it</span>
+                <span class="header__logo-title">Log In</span>
             </div>
-            <div class="header__auth">
-                <span class="header__back-link" >Back</span>
+            <div class="header__back">
+                <span class="header__back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
             </div>
         </header>
         <main class="main-login">
-            <h4 class="main__form-title">Sign In</h4>
             <form class="main__form" id="signin-form" autoComplete="on">
                 <input
                         name="useremail"
@@ -54,14 +57,81 @@
                         type="password"
                         placeholder="Password"
                 />
-                <button
-                        class="main__form-submit"
-                        type="submit">Sign In</button>
             </form>
+            <section class="main__section_find">
+              <div class='social'>
+                <div class="social facebook">
+                  <a href="https://www.facebook.com/v7.0/dialog/oauth?redirect_uri=https%3A%2F%2Fsubtite.it%3A3000%2Fauth%2Ffacebook&client_id=282425426121060&response_type=code" target="_blank"><img class="icon-facebook" src="../assets/img/icons/facebook-icon.png"></a>
+                </div>
+                <div class="social google">
+                  <a href="" target="_blank"><img class="icon-google" src="../assets/img/icons/google-icon.png"></a>
+                </div>
+                <div class="social github">
+                  <a href="" target="_blank"><img class="icon-github" src="../assets/img/icons/github.png"></a>
+                </div>
+                <button class="main__form-submit" id="signin-form-submit" type="submit">Log In</button>
+              </div>
+            </section>
         </main>
     </div>
 
-    <script src="popup.js"></script>
+    <div class="popup-content" id="popup-auth">
+      <header class="header-login">
+          <div class="header__logo">
+              <span class="header__logo-title">New User</span>
+          </div>
+          <div class="header__back">
+              <span class="back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
+          </div>
+      </header>
+      <main class="main-login">
+          <form class="main__form" autoComplete="on">
+              <input
+                      name="useremail"
+                      class="main__form-input"
+                      type="email" placeholder="Email"
+                      required
+                      autoFocus/>
+              <input
+                      required
+                      id="password"
+                      class="main__form-input"
+                      type="password"
+                      placeholder="Password"
+              />
+          </form>
+          <section class="main__section_find">
+            <div class='social'>
+              <div class="social facebook">
+                <a href="" target="_blank"><img class="icon-facebook" src="../assets/img/icons/facebook-icon.png"></a>
+              </div>
+              <div class="social google">
+                <a href="" target="_blank"><img class="icon-google" src="../assets/img/icons/google-icon.png"></a>
+              </div>
+              <div class="social github">
+                <a href="" target="_blank"><img class="icon-github" src="../assets/img/icons/github.png"></a>
+              </div>
+              <button class="main__form-submit" type="submit">Sign Up</button>
+            </div>
+          </section>
+      </main>
+  </div>
+
+    <div class="popup-content" id="popup-profile">
+      <header class="header-login">
+          <div class="header__logo">
+              <span class="header__logo-title">Welcome</span>
+          </div>
+      </header>
+      <main class="main-login">
+          <section class="main__section_find">
+              <button class="main__form-submit triggerEdit">Edit</button>
+              <a href="https://subtite.it:3000/logout"><button class="main__form-submit logout">Logout</button></a>
+          </section>
+      </main>
+  </div>
+
+    <script type="module" src="popup.js"></script>
 
 </body>
 </html>

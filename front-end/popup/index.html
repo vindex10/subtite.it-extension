@@ -31,10 +31,10 @@
         </main>
     </div>
 
-    <div class="popup-content" id="popup-auth">
+    <div class="popup-content" id="popup-login">
         <header class="header-login">
             <div class="header__logo">
-                <span class="header__logo-title">New User</span>
+                <span class="header__logo-title">Log In</span>
             </div>
             <div class="header__back">
                 <span class="header__back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
@@ -61,7 +61,7 @@
             <section class="main__section_find">
               <div class='social'>
                 <div class="social facebook">
-                  <a href="" target="_blank"><img class="icon-facebook" src="../assets/img/icons/facebook-icon.png"></a>
+                  <a href="https://www.facebook.com/v7.0/dialog/oauth?redirect_uri=https%3A%2F%2Fsubtite.it%3A3000%2Fauth%2Ffacebook&client_id=282425426121060&response_type=code" target="_blank"><img class="icon-facebook" src="../assets/img/icons/facebook-icon.png"></a>
                 </div>
                 <div class="social google">
                   <a href="" target="_blank"><img class="icon-google" src="../assets/img/icons/google-icon.png"></a>
@@ -69,13 +69,13 @@
                 <div class="social github">
                   <a href="" target="_blank"><img class="icon-github" src="../assets/img/icons/github.png"></a>
                 </div>
-                <button class="main__form-submit" id="signin-form" type="submit">Log In</button>
+                <button class="main__form-submit" id="signin-form-submit" type="submit">Log In</button>
               </div>
             </section>
         </main>
     </div>
 
-    <div class="popup-content" id="popup-login">
+    <div class="popup-content" id="popup-auth">
       <header class="header-login">
           <div class="header__logo">
               <span class="header__logo-title">New User</span>
@@ -117,7 +117,21 @@
       </main>
   </div>
 
-    <script src="popup.js"></script>
+    <div class="popup-content" id="popup-profile">
+      <header class="header-login">
+          <div class="header__logo">
+              <span class="header__logo-title">Welcome</span>
+          </div>
+      </header>
+      <main class="main-login">
+          <section class="main__section_find">
+              <button class="main__form-submit triggerEdit">Edit</button>
+              <a href="https://subtite.it:3000/logout"><button class="main__form-submit logout">Logout</button></a>
+          </section>
+      </main>
+  </div>
+
+    <script type="module" src="popup.js"></script>
 
 </body>
 </html>

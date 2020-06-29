@@ -113,6 +113,10 @@ transition-delay: 0 !important;
     background-color: #ededed;
 }
 
+.welcome {
+    padding: 1em;
+}
+
 .header {
     display: flex;
     padding: 1.5em 1.5em;

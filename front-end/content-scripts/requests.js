@@ -29,5 +29,3 @@ const Requests = {
     await __postData(SERVER_NAME + '/phrase', translationData)
   }
 }
-
-export { Requests }

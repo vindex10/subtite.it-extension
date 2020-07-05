@@ -23,6 +23,8 @@ Standard linter doesn't know about such a global scope pollution. So let him kno
 * Standard linter doesn't know about browser api. API methods like `fetch` should also be added to the list of globals.
 * Content scripts don't allow imports. Please annotate imports as if they were allowed.
 * Since we share global scope, prefix private methods with "\__", and wrap exported methods into an object:
+* Linter will warn you that exported method is defined but never used (of course, because we use it in another file).
+Just ignore the warning :)
 
 ```
 async function __postData (url, data) {

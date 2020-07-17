@@ -10,6 +10,7 @@ async function initRouter () {
   const landIngPopUp = document.querySelector('#popup-landing')
   const profilePopUp = document.querySelector('#popup-profile')
   const profileTriggerEdit = document.querySelector('#popup-profile .triggerEdit')
+  const profileLogout = document.querySelector('#popup-profile .logout')
   const AuthPageLink = document.querySelector('.header__auth-link')
   const loginPageLink = document.querySelector('.header__login-link')
   const backHomePageLink = document.querySelector('.header__back-link')
@@ -39,6 +40,8 @@ async function initRouter () {
   profileTriggerEdit.addEventListener('click', async () => {
     await Utils.callOnActiveTab(Actions.triggerEdit)
   })
+  profileLogout.addEventListener('click', goBackHandler)
+
   backHomePageLink.addEventListener('click', goBackHandler)
   backHome.addEventListener('click', goBackHandler)
 }

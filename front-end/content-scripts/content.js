@@ -5,6 +5,10 @@
 // import {submitPhrase} as Requests from './requests.js'
 
 function showEditor () {
+  const oldEditor = document.querySelector('#info .add-translation')
+  if (oldEditor) {
+    oldEditor.remove()
+  }
   document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
           <button class="add-translation__toggle-button">Hide</button>
           <form class="add-translation__form">
@@ -30,6 +34,7 @@ function showEditor () {
 }
 
 function triggerEditor (sortedPhrases) {
+  document.querySelector('.video-stream').pause()
   document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
 
   showEditor()
@@ -59,6 +64,78 @@ function triggerEditor (sortedPhrases) {
     }
   })
 }
+
+async function getAndPreparePhrases (uri) {
+  const phrases = await Requests.getVideoData(uri)
+
+  const phrasesExtended = [...phrases]
+  phrasesExtended.unshift({ data: 'Script starts here:', ref: 9000 })
+  phrasesExtended.push({ data: 'The end of the script.', ref: 9000 })
+
+  const sortedPhrases = []
+  for (let i = 0; i < phrases.length; i++) {
+    if (Object.prototype.hasOwnProperty.call(phrases[i], 'editable')) {
+      sortedPhrases.push({ ...phrasesExtended[i - 1] })
+      sortedPhrases.push({ ...phrasesExtended[i] })
+      sortedPhrases.push({ ...phrasesExtended[i + 1] })
+      break
+    }
+  }
+  return sortedPhrases
+}
+
+const YT = {}
+
+YT.triggerShowtime = 8000
+
+YT.triggerActions = {
+  EDIT: 'edit',
+  VOTE: 'vote'
+}
+
+YT.showTrigger = async function (type, callback) {
+  const theLogo = document.createElement('div')
+  theLogo.addEventListener('click', async () => {
+    document.getElementById('movie_player').removeChild(theLogo)
+    await callback()
+  })
+  theLogo.classList.add('subtite__triggerAction')
+  theLogo.classList.add('subtite__action_' + type)
+  document.getElementById('movie_player').appendChild(theLogo)
+  window.setTimeout(async () => {
+    document.getElementById('movie_player').removeChild(theLogo)
+  }, YT.triggerShowtime)
+}
+
+window.addEventListener('keydown', async (e) => {
+  // trigger on Space
+  let type
+  if (e.keyCode === 69) {
+    type = YT.triggerActions.EDIT
+  } else if (e.keyCode === 86) {
+    type = YT.triggerActions.VOTE
+  } else {
+    return
+  }
+
+  let sortedPhrases
+
+  try {
+    sortedPhrases = await getAndPreparePhrases(window.location.href)
+  } catch (e) {
+    console.log("Couldn't fetch phrases. No trigger")
+    console.log(e)
+    sortedPhrases = null
+  }
+
+  if (sortedPhrases === null) {
+    return
+  }
+
+  await YT.showTrigger(type, async () => {
+    triggerEditor(sortedPhrases)
+  })
+})
 
 browser.runtime.onMessage.addListener((request) => {
   if (request.action === 'triggerEdit') {

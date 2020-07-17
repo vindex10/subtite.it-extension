@@ -27,5 +27,15 @@ async function __getData (url) {
 const Requests = {
   submitPhrase: async function (translationData) {
     await __postData(SERVER_NAME + '/phrase', translationData)
+  },
+  getVideoData: async function (videoLink) {
+    const videoLinkFormatted = videoLink.replace(/&.*/, '')
+    const response = await fetch(SERVER_NAME + `/phrase?url=${videoLinkFormatted}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    return await response.json()
   }
 }

@@ -4,45 +4,58 @@
 
 // import {submitPhrase} as Requests from './requests.js'
 
-function showEditor () {
-  document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
-          <button class="add-translation__toggle-button">Hide</button>
-          <form class="add-translation__form">
-            <p class="add-translation__text add-translation__prev-text"></p>
-            <textarea class="add-translation__text add-translation__textarea" id="phrase-translation"> </textarea>
-            <p class="add-translation__text add-translation__next-text"></p>
-            <div class="add-translation__submit-button-container">
-              <button class="add-translation__download-button">Download Script</button>
-              <button class="add-translation__submit-button" type="submit">Submit</button>
-            </div>
-        </form>
-      </div>`)
+async function showEditor (sortedPhrases) {
+  const moviePlayer = document.getElementById('movie_player')
 
-  document.querySelector('.add-translation__toggle-button').addEventListener('click', (event) => {
-    if (!document.querySelector('.add-translation__form').classList.contains('hide-add-translation')) {
-      event.target.innerText = 'Show'
-      document.querySelector('.add-translation__form').classList.add('hide-add-translation')
-    } else {
-      event.target.innerText = 'Hide'
-      document.querySelector('.add-translation__form').classList.remove('hide-add-translation')
-    }
+  const oldEditPopup = document.querySelector('.subtite__edit-subtitle')
+  if (oldEditPopup) {
+    moviePlayer.removeChild(oldEditPopup)
+  }
+
+  const editPopup = document.createElement('div')
+  editPopup.classList.add('subtite__edit-subtitle')
+  editPopup.innerHTML = `
+    <div class="sidebar">&nbsp;</div>
+    <form action="#" class="edit-subtitle_form">
+      <div class="top-controls">
+        <input type="button" class="cancel" title="Cancel" value="" />
+      </div>
+      <div class="content">
+        <div class="phrase-container">
+          <div class="phrase-contols"><span class="replay">&nbsp;</span></div>
+          <p class="phrase">${sortedPhrases[0].data}</p>
+        </div>
+        <div class="phrase-container">
+          <div class="phrase-contols"><span class="replay">&nbsp;</span></div>
+          <p class="phrase editable">${sortedPhrases[1].data}</p>
+        </div>
+        <div class="phrase-container">
+          <div class="phrase-contols"><span class="replay">&nbsp;</span></div>
+          <textarea class="phrase edited">${sortedPhrases[1].data}</textarea>
+          <input type="hidden" name="edition-token" class="edition-token" value="${sortedPhrases[1].edition_id}" />
+        </div>
+        <div class="phrase-container">
+          <div class="phrase-contols"><span class="replay">&nbsp;</span></div>
+          <p class="phrase">${sortedPhrases[2].data}</p>
+        </div>
+      </div>
+      <div class="bottom-controls">
+        <input type="submit" class="submit" title="Submit" value="" />
+      </div>
+    </form>
+  `
+  moviePlayer.appendChild(editPopup)
+
+  document.querySelector('.subtite__edit-subtitle .cancel').addEventListener('click', async (event) => {
+    moviePlayer.removeChild(editPopup)
+    document.querySelector('.video-stream').play()
   })
-}
 
-function triggerEditor (sortedPhrases) {
-  document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
-
-  showEditor()
-
-  document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data
-  document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data
-  document.querySelector('.add-translation__textarea').setAttribute('edition_id', `${sortedPhrases[1].edition_id}`)
-  document.querySelector('.add-translation__next-text').innerText = sortedPhrases[2].data
-
-  document.querySelector('.add-translation__form').addEventListener('submit', async (event) => {
+  document.querySelector('.subtite__edit-subtitle .submit').addEventListener('click', async (event) => {
     event.preventDefault()
-    const data = document.querySelector('#phrase-translation').value
-    const editionId = document.querySelector('#phrase-translation').getAttribute('edition_id')
+
+    const data = editPopup.querySelector('.phrase.edited').value
+    const editionId = editPopup.querySelector('.edition-token').value
 
     const translationData = {
       editionId,
@@ -57,11 +70,19 @@ function triggerEditor (sortedPhrases) {
     } catch (error) {
       console.log('Translation cannot be saved: ', error)
     }
+    moviePlayer.removeChild(editPopup)
+    document.querySelector('.video-stream').play()
   })
 }
 
-browser.runtime.onMessage.addListener((request) => {
+async function triggerEditor (sortedPhrases) {
+  document.querySelector('.video-stream').pause()
+  document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
+  await showEditor(sortedPhrases)
+}
+
+browser.runtime.onMessage.addListener(async (request) => {
   if (request.action === 'triggerEdit') {
-    triggerEditor(request.sortedPhrases)
+    await triggerEditor(request.sortedPhrases)
   }
 })

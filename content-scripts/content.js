@@ -1,10 +1,28 @@
-/* global YouTubeUI, Utils, Storage, browser */
+/* global TimelineEvents, TimelineEvent, UInterface, Utils, F, Storage */
 
 'use strict'
 
-Utils.listenEventOnce(window, 'keydown', (e) => {
-  alert('Hello!')
-  // Storage.getAndPreparePhrases(window.location.href)
+async function tEventFromPhrase (phrase) {
+  const tstart = phrase.start / 1000
+  const tstop = phrase.stop / 1000
+  const eactivate = F.partial(UInterface.replaceSubtitle, phrase.data)
+  const edeactivate = TimelineEvents.NOOP
+  return new TimelineEvent(tstart, tstop, eactivate, edeactivate)
+}
+
+async function _loadPhrases (phrases) {
+  for (const p of phrases) {
+    const parsedPhrase = await tEventFromPhrase(p)
+    await TimelineEvents.pushEvent(parsedPhrase)
+  }
+}
+
+Utils.listenEventOnce(window, 'load', async (e) => {
+  await Storage.syncPhrases()
+  const phrases = await Storage.getCurrentPhrases()
+  await TimelineEvents.initTimelineListener()
+  await _loadPhrases(phrases)
+  await TimelineEvents.runTimelineListener()
 })
 
 // window.addEventListener('keydown', async (e) => {

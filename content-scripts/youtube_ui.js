@@ -11,7 +11,7 @@ YouTubeUI.triggerActions = {
   VOTE: 'vote'
 }
 
-YouTubeUI.showEditor = function () {
+YouTubeUI.showEditor = async function () {
   const oldEditor = document.querySelector('#info .add-translation')
   if (oldEditor) {
     oldEditor.remove()
@@ -40,11 +40,11 @@ YouTubeUI.showEditor = function () {
   })
 }
 
-YouTubeUI.triggerEditor = function (sortedPhrases) {
+YouTubeUI.triggerEditor = async function (sortedPhrases) {
   document.querySelector('.video-stream').pause()
   document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
 
-  YouTubeUI.showEditor()
+  await YouTubeUI.showEditor()
 
   document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data
   document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data
@@ -85,3 +85,18 @@ YouTubeUI.showTrigger = async function (type, callback) {
     document.getElementById('movie_player').removeChild(theLogo)
   }, YouTubeUI.triggerShowtime)
 }
+
+YouTubeUI.replaceSubtitle = async function (phrase) {
+  const subClass = 'subtite__subtitle'
+  let theSub = document.querySelector('.' + subClass)
+  if (theSub === null) {
+    theSub = document.createElement('div')
+    theSub.classList.add(subClass)
+    document.getElementById('movie_player').appendChild(theSub)
+  }
+  theSub.innerHTML = phrase
+}
+
+YouTubeUI.getVideoTimestamp = async function () { return document.querySelector('.video-stream').currentTime }
+
+const UInterface = YouTubeUI

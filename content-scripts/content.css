@@ -69,6 +69,19 @@
 
 /* YT */
 
+.subtite__subtitle {
+    font-size: 18pt;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    position: absolute;
+    bottom: 2em;
+    left: 5%;
+    right: 5%;
+    padding: 0.1em;
+    z-index: 40;
+}
+
 .subtite__triggerAction {
     position: absolute;
     right: 0.5em;

@@ -2,7 +2,7 @@
 
 'use strict'
 
-const SERVER_NAME = 'https://subtite.it:3000'
+const SERVER_NAME = 'http://localhost:5000'
 
 async function __postData (url, data) {
   const response = await fetch(url, {
@@ -32,11 +32,8 @@ Requests.submitPhrase = async function (translationData) {
 
 Requests.getVideoData = async function (videoLink) {
   const videoLinkFormatted = videoLink.replace(/&.*/, '')
-  const response = await fetch(SERVER_NAME + `/phrase?url=${videoLinkFormatted}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
+  const response = await fetch(SERVER_NAME + `/subtitle?url=${videoLinkFormatted}&lang=en`, {
+    method: 'GET'
   })
   return await response.json()
 }

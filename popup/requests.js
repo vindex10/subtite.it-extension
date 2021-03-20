@@ -2,7 +2,7 @@
 
 'use strict'
 
-const SERVER_NAME = 'https://subtite.it:3000'
+const SERVER_NAME = 'https://localhost:5000'
 
 async function getVideoData (videoLink) {
   const videoLinkFormatted = videoLink.replace(/&.*/, '')

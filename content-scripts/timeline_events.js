@@ -1,11 +1,16 @@
-/* global UInterface */
+/* global UInterface, CollectionUtils */
 
 'use strict'
 
 const TimelineEvents = {}
 
+TimelineEvents.TAGS = {
+  subtitle: 0
+}
+
 TimelineEvents.TICK_PERIOD = 300 // 0.5 sec period
 TimelineEvents._LISTENER = undefined
+TimelineEvents._DISABLED_TEVENTS = undefined
 TimelineEvents._INACTIVE_TEVENTS = undefined
 TimelineEvents._ACTIVE_TEVENTS = undefined
 
@@ -14,6 +19,7 @@ TimelineEvents.stopTimelineListener = function () {
   for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
     tevent.deactivate()
   }
+  TimelineEvents._DISABLED_TEVENTS = undefined
   TimelineEvents._ACTIVE_TEVENTS = undefined
   TimelineEvents._INACTIVE_TEVENTS = undefined
 }
@@ -23,13 +29,73 @@ TimelineEvents.pushEvent = function (tevent) {
   TimelineEvents._INACTIVE_TEVENTS.push(tevent)
 }
 
+TimelineEvents.pushDisabledEvent = function (tevent) {
+  TimelineEvents._DISABLED_TEVENTS.push(tevent)
+}
+
+TimelineEvents.disableEventsByTags = function (tags) {
+  tags = new Set(tags)
+  TimelineEvents._disableActiveByTags(tags)
+  TimelineEvents._disableInactiveByTags(tags)
+}
+
+TimelineEvents._disableActiveByTags = function (tags) {
+  if (!TimelineEvents._ACTIVE_TEVENTS) { return }
+
+  const newActiveTEvents = []
+
+  for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      newActiveTEvents.push(tevent)
+      continue
+    }
+    tevent.deactivate()
+    TimelineEvents._DISABLED_TEVENTS.push(tevent)
+  }
+
+  TimelineEvents._ACTIVE_TEVENTS = newActiveTEvents
+}
+
+TimelineEvents._disableInactiveByTags = function (tags) {
+  if (!TimelineEvents._INACTIVE_TEVENTS) { return }
+
+  const newInactiveTEvents = []
+
+  for (const tevent of TimelineEvents._INACTIVE_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      newInactiveTEvents.push(tevent)
+      continue
+    }
+    TimelineEvents._DISABLED_TEVENTS.push(tevent)
+  }
+
+  TimelineEvents._INACTIVE_TEVENTS = newInactiveTEvents
+}
+
+TimelineEvents.enableEventsByTags = function (tags) {
+  tags = new Set(tags)
+  if (!TimelineEvents._DISABLED_TEVENTS) { return }
+
+  const newDisabledTEvents = []
+
+  for (const tevent of TimelineEvents._DISABLED_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      newDisabledTEvents.push(tevent)
+      continue
+    }
+    TimelineEvents._INACTIVE_TEVENTS.push(tevent)
+  }
+
+  TimelineEvents._DISABLED_TEVENTS = newDisabledTEvents
+}
+
 TimelineEvents._deactivateActive = function (ts) {
   if (!TimelineEvents._ACTIVE_TEVENTS) { return }
 
   const stillActiveTEvents = []
 
   for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
-    if (ts < tevent.tStart || ts > tevent.tStop) {
+    if (ts > tevent.tStart && ts < tevent.tStop) {
       stillActiveTEvents.push(tevent)
       continue
     }
@@ -71,6 +137,7 @@ TimelineEvents.initTimelineListener = function () {
 
   TimelineEvents._INACTIVE_TEVENTS = []
   TimelineEvents._ACTIVE_TEVENTS = []
+  TimelineEvents._DISABLED_TEVENTS = []
 }
 
 TimelineEvents.runTimelineListener = function () {
@@ -86,10 +153,11 @@ TimelineEvents.runTimelineListener = function () {
 TimelineEvents.NOOP = function () {}
 
 class TimelineEvent {
-  constructor (tStart, tStop, activate, deactivate) {
+  constructor (tStart, tStop, activate, deactivate, tags = new Set()) {
     this.tStart = tStart
     this.tStop = tStop
     this.activate = activate
     this.deactivate = deactivate
+    this.tags = new Set(tags)
   }
 }

@@ -46,3 +46,16 @@ Utils.generateGUID = function () {
 const F = {}
 
 F.partial = function (fn, firstArg) { return (...restArgs) => { return fn(firstArg, ...restArgs) } }
+
+const CollectionUtils = {}
+
+CollectionUtils.intersectSets = (set1, set2) => {
+  const common = []
+  for (const e1 of set1) {
+    if (!set2.has(e1)) {
+      continue
+    }
+    common.push(e1)
+  }
+  return new Set(common)
+}

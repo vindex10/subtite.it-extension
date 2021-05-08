@@ -97,6 +97,15 @@ YouTubeUI.replaceSubtitle = function (phrase) {
   theSub.innerHTML = phrase
 }
 
+YouTubeUI.removeSubtitle = function () {
+  const subClass = 'subtite__subtitle'
+  const theSub = document.querySelector('.' + subClass)
+  if (theSub === null) {
+    return
+  }
+  theSub.remove()
+}
+
 YouTubeUI.getVideoTimestamp = function () { return document.querySelector('.video-stream').currentTime }
 
 const UInterface = YouTubeUI

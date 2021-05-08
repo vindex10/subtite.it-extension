@@ -77,4 +77,14 @@ async function triggerEdit (activeTab) {
   await browser.tabs.sendMessage(activeTab.id, { action: 'triggerEdit', sortedPhrases: sortedPhrases })
 }
 
-export { initSignIn, triggerEdit }
+function toggleSubtitles (activeTab, e) {
+  if (e.target.checked) {
+    browser.tabs.sendMessage(activeTab.id, { action: 'enableSubtitles' })
+    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Disable subtitles'
+  } else {
+    browser.tabs.sendMessage(activeTab.id, { action: 'disableSubtitles' })
+    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Enable subtitles'
+  }
+}
+
+export { initSignIn, triggerEdit, toggleSubtitles }

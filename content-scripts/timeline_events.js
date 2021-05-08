@@ -9,21 +9,21 @@ TimelineEvents._LISTENER = undefined
 TimelineEvents._INACTIVE_TEVENTS = undefined
 TimelineEvents._ACTIVE_TEVENTS = undefined
 
-TimelineEvents.stopTimelineListener = async function () {
+TimelineEvents.stopTimelineListener = function () {
   window.clearInterval(TimelineEvents._LISTENER)
   for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
-    await tevent.deactivate()
+    tevent.deactivate()
   }
   TimelineEvents._ACTIVE_TEVENTS = undefined
   TimelineEvents._INACTIVE_TEVENTS = undefined
 }
 
-TimelineEvents.pushEvent = async function (tevent) {
+TimelineEvents.pushEvent = function (tevent) {
   // TODO: optimize to push in sorted order
   TimelineEvents._INACTIVE_TEVENTS.push(tevent)
 }
 
-TimelineEvents._deactivateActive = async function (ts) {
+TimelineEvents._deactivateActive = function (ts) {
   if (!TimelineEvents._ACTIVE_TEVENTS) { return }
 
   const stillActiveTEvents = []
@@ -34,13 +34,13 @@ TimelineEvents._deactivateActive = async function (ts) {
       continue
     }
     TimelineEvents._INACTIVE_TEVENTS.push(tevent)
-    await tevent.deactivate()
+    tevent.deactivate()
   }
 
   TimelineEvents._ACTIVE_TEVENTS = stillActiveTEvents
 }
 
-TimelineEvents._activateInactive = async function (ts) {
+TimelineEvents._activateInactive = function (ts) {
   if (!TimelineEvents._INACTIVE_TEVENTS) { return }
 
   const stillInactiveTEvents = []
@@ -51,39 +51,39 @@ TimelineEvents._activateInactive = async function (ts) {
       continue
     }
     TimelineEvents._ACTIVE_TEVENTS.push(tevent)
-    await tevent.activate()
+    tevent.activate()
   }
 
   TimelineEvents._INACTIVE_TEVENTS = stillInactiveTEvents
 }
 
-TimelineEvents._updateActionStates = async function (ts) {
+TimelineEvents._updateActionStates = function (ts) {
   // TODO: estimate _TEVENTS index to use for activation later
-  await TimelineEvents._deactivateActive(ts)
+  TimelineEvents._deactivateActive(ts)
   // TODO: use hint from _deactivateActivated to know where to look for relevant events
-  await TimelineEvents._activateInactive(ts)
+  TimelineEvents._activateInactive(ts)
 }
 
-TimelineEvents.initTimelineListener = async function () {
+TimelineEvents.initTimelineListener = function () {
   if (typeof TimelineEvents._LISTENER !== 'undefined') {
-    await TimelineEvents.stopTimelineListener()
+    TimelineEvents.stopTimelineListener()
   }
 
   TimelineEvents._INACTIVE_TEVENTS = []
   TimelineEvents._ACTIVE_TEVENTS = []
 }
 
-TimelineEvents.runTimelineListener = async function () {
+TimelineEvents.runTimelineListener = function () {
   TimelineEvents._LISTENER = window.setInterval(
-    async () => {
-      const videoTs = await UInterface.getVideoTimestamp()
-      await TimelineEvents._updateActionStates(videoTs)
+    () => {
+      const videoTs = UInterface.getVideoTimestamp()
+      TimelineEvents._updateActionStates(videoTs)
     },
     TimelineEvents.TICK_PERIOD
   )
 }
 
-TimelineEvents.NOOP = async function () {}
+TimelineEvents.NOOP = function () {}
 
 class TimelineEvent {
   constructor (tStart, tStop, activate, deactivate) {

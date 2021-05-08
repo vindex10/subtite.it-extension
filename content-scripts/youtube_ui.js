@@ -72,7 +72,7 @@ YouTubeUI.triggerEditor = async function (sortedPhrases) {
   })
 }
 
-YouTubeUI.showTrigger = async function (type, callback) {
+YouTubeUI.showTrigger = function (type, callback) {
   const theLogo = document.createElement('div')
   theLogo.addEventListener('click', async () => {
     document.getElementById('movie_player').removeChild(theLogo)
@@ -81,12 +81,12 @@ YouTubeUI.showTrigger = async function (type, callback) {
   theLogo.classList.add('subtite__triggerAction')
   theLogo.classList.add('subtite__action_' + type)
   document.getElementById('movie_player').appendChild(theLogo)
-  window.setTimeout(async () => {
+  window.setTimeout(() => {
     document.getElementById('movie_player').removeChild(theLogo)
   }, YouTubeUI.triggerShowtime)
 }
 
-YouTubeUI.replaceSubtitle = async function (phrase) {
+YouTubeUI.replaceSubtitle = function (phrase) {
   const subClass = 'subtite__subtitle'
   let theSub = document.querySelector('.' + subClass)
   if (theSub === null) {
@@ -97,6 +97,6 @@ YouTubeUI.replaceSubtitle = async function (phrase) {
   theSub.innerHTML = phrase
 }
 
-YouTubeUI.getVideoTimestamp = async function () { return document.querySelector('.video-stream').currentTime }
+YouTubeUI.getVideoTimestamp = function () { return document.querySelector('.video-stream').currentTime }
 
 const UInterface = YouTubeUI

@@ -12,12 +12,12 @@ Storage.syncPhrases = async function () {
   Storage._currentSubtitle = phrasesData
 }
 
-Storage.getCurrentPhrases = async function () {
+Storage.getCurrentPhrases = function () {
   if (typeof Storage._currentSubtitle === 'undefined') { return undefined }
   return Storage._currentSubtitle.phrases
 }
 
-Storage.getCurrentAssessments = async function () {
+Storage.getCurrentAssessments = function () {
   if (typeof Storage._currentSubtitle === 'undefined') { return undefined }
   return Storage._currentSubtitle.assessments
 }

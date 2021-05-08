@@ -2,7 +2,7 @@
 
 'use strict'
 
-async function tEventFromPhrase (phrase) {
+function tEventFromPhrase (phrase) {
   const tstart = phrase.start / 1000
   const tstop = phrase.stop / 1000
   const eactivate = F.partial(UInterface.replaceSubtitle, phrase.data)
@@ -10,19 +10,19 @@ async function tEventFromPhrase (phrase) {
   return new TimelineEvent(tstart, tstop, eactivate, edeactivate)
 }
 
-async function _loadPhrases (phrases) {
+function _loadPhrases (phrases) {
   for (const p of phrases) {
-    const parsedPhrase = await tEventFromPhrase(p)
-    await TimelineEvents.pushEvent(parsedPhrase)
+    const parsedPhrase = tEventFromPhrase(p)
+    TimelineEvents.pushEvent(parsedPhrase)
   }
 }
 
 Utils.listenEventOnce(window, 'load', async (e) => {
   await Storage.syncPhrases()
-  const phrases = await Storage.getCurrentPhrases()
-  await TimelineEvents.initTimelineListener()
-  await _loadPhrases(phrases)
-  await TimelineEvents.runTimelineListener()
+  const phrases = Storage.getCurrentPhrases()
+  TimelineEvents.initTimelineListener()
+  _loadPhrases(phrases)
+  TimelineEvents.runTimelineListener()
 })
 
 // window.addEventListener('keydown', async (e) => {

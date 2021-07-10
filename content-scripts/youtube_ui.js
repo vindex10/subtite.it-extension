@@ -1,10 +1,21 @@
-/* global Requests, browser */
+/* global Requests */
 
 'use strict'
 
-// import {submitPhrase} as Requests from './requests.js'
+const YouTubeUI = {}
 
-function showEditor () {
+YouTubeUI.triggerShowtime = 8000
+
+YouTubeUI.triggerActions = {
+  EDIT: 'edit',
+  VOTE: 'vote'
+}
+
+YouTubeUI.showEditor = async function () {
+  const oldEditor = document.querySelector('#info .add-translation')
+  if (oldEditor) {
+    oldEditor.remove()
+  }
   document.querySelector('#info-contents').insertAdjacentHTML('beforebegin', `<div class="add-translation">
           <button class="add-translation__toggle-button">Hide</button>
           <form class="add-translation__form">
@@ -29,10 +40,11 @@ function showEditor () {
   })
 }
 
-function triggerEditor (sortedPhrases) {
+YouTubeUI.triggerEditor = async function (sortedPhrases) {
+  document.querySelector('.video-stream').pause()
   document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
 
-  showEditor()
+  await YouTubeUI.showEditor()
 
   document.querySelector('.add-translation__prev-text').innerText = sortedPhrases[0].data
   document.querySelector('.add-translation__textarea').innerText = sortedPhrases[1].data
@@ -60,8 +72,40 @@ function triggerEditor (sortedPhrases) {
   })
 }
 
-browser.runtime.onMessage.addListener((request) => {
-  if (request.action === 'triggerEdit') {
-    triggerEditor(request.sortedPhrases)
+YouTubeUI.showTrigger = function (type, callback) {
+  const theLogo = document.createElement('div')
+  theLogo.addEventListener('click', async () => {
+    document.getElementById('movie_player').removeChild(theLogo)
+    await callback()
+  })
+  theLogo.classList.add('subtite__triggerAction')
+  theLogo.classList.add('subtite__action_' + type)
+  document.getElementById('movie_player').appendChild(theLogo)
+  window.setTimeout(() => {
+    document.getElementById('movie_player').removeChild(theLogo)
+  }, YouTubeUI.triggerShowtime)
+}
+
+YouTubeUI.replaceSubtitle = function (phrase) {
+  const subClass = 'subtite__subtitle'
+  let theSub = document.querySelector('.' + subClass)
+  if (theSub === null) {
+    theSub = document.createElement('div')
+    theSub.classList.add(subClass)
+    document.getElementById('movie_player').appendChild(theSub)
   }
-})
+  theSub.innerHTML = phrase
+}
+
+YouTubeUI.removeSubtitle = function () {
+  const subClass = 'subtite__subtitle'
+  const theSub = document.querySelector('.' + subClass)
+  if (theSub === null) {
+    return
+  }
+  theSub.remove()
+}
+
+YouTubeUI.getVideoTimestamp = function () { return document.querySelector('.video-stream').currentTime }
+
+const UInterface = YouTubeUI

@@ -59,6 +59,7 @@ import * as Actions from './actions.js' // { initSignIn }
 * Press "Load Temporary Add-on..."
 * Choose `manifest.json` from the `/front-end` dir.
 * Enjoy extension in your browser :)
+* Video used for debugging: https://www.youtube.com/watch?v=F9ei40nxKDc
 
 
 ### Packaging

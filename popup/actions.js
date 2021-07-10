@@ -12,15 +12,16 @@ import * as Requests from './requests.js' // {getVideoData, getUserProfile, send
 // Auth
 
 async function initSignIn () {
-  Requests.getUserProfile().then(async (res) => {
+  try {
+    const res = await Requests.getUserProfile()
     if (res.username) {
       User.Identity.set(res)
       await Router.onLogin()
     }
-  }).catch(() => {
+  } catch {
     let signInData
     // TODO: trigger and intercept submit instead
-    document.querySelector('#signin-form-submit').addEventListener('click', (event) => {
+    document.querySelector('#signin-form-submit').addEventListener('click', async (event) => {
       const username = document.querySelector('#useremail').value
       const password = document.querySelector('#password').value
 
@@ -29,14 +30,19 @@ async function initSignIn () {
         password
       }
 
-      Requests.sendUserAuth(signInData).then(async (res) => {
+      try {
+        await Requests.sendUserAuth(signInData)
+        await new Promise(resolve => setTimeout(resolve, 1000)) // return user profile from post! race conditions
+        const res = await Requests.getUserProfile()
         if (res.username) {
           User.Identity.set(res)
           await Router.onLogin()
         }
-      })
+      } catch {
+        console.log('Auth failed')
+      }
     })
-  })
+  }
 }
 
 //
@@ -71,4 +77,14 @@ async function triggerEdit (activeTab) {
   await browser.tabs.sendMessage(activeTab.id, { action: 'triggerEdit', sortedPhrases: sortedPhrases })
 }
 
-export { initSignIn, triggerEdit }
+function toggleSubtitles (activeTab, e) {
+  if (e.target.checked) {
+    browser.tabs.sendMessage(activeTab.id, { action: 'enableSubtitles' })
+    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Disable subtitles'
+  } else {
+    browser.tabs.sendMessage(activeTab.id, { action: 'disableSubtitles' })
+    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Enable subtitles'
+  }
+}
+
+export { initSignIn, triggerEdit, toggleSubtitles }

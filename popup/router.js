@@ -2,7 +2,7 @@
 
 import * as Utils from './utils.js' // {callOnActiveTab}
 import * as User from './user.js' // {currentUser}
-import * as Actions from './actions.js' // {triggerEdit}
+import * as Actions from './actions.js' // {triggerEdit, toggleSubtitles}
 
 async function initRouter () {
   const authPopUp = document.querySelector('#popup-auth')
@@ -10,10 +10,12 @@ async function initRouter () {
   const landIngPopUp = document.querySelector('#popup-landing')
   const profilePopUp = document.querySelector('#popup-profile')
   const profileTriggerEdit = document.querySelector('#popup-profile .triggerEdit')
+  const profileLogout = document.querySelector('#popup-profile .logout')
   const AuthPageLink = document.querySelector('.header__auth-link')
   const loginPageLink = document.querySelector('.header__login-link')
   const backHomePageLink = document.querySelector('.header__back-link')
   const backHome = document.querySelector('.back-link')
+  const toggleSubtitlesSwitch = document.querySelector('#toggle-subtitles')
 
   async function goBackHandler () {
     landIngPopUp.style.display = 'block'
@@ -39,8 +41,13 @@ async function initRouter () {
   profileTriggerEdit.addEventListener('click', async () => {
     await Utils.callOnActiveTab(Actions.triggerEdit)
   })
+  profileLogout.addEventListener('click', goBackHandler)
+
   backHomePageLink.addEventListener('click', goBackHandler)
   backHome.addEventListener('click', goBackHandler)
+  toggleSubtitlesSwitch.addEventListener('change', async (e) => {
+    await Utils.callOnActiveTab(Actions.toggleSubtitles, e)
+  })
 }
 
 async function onLogin () {

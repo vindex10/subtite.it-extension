@@ -21,8 +21,14 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content-scripts/requests.js", "content-scripts/content.js"],
-      "css": ["content-scripts/content.css"]
+      "js": ["content-scripts/utils.js",
+             "content-scripts/storage.js",
+             "content-scripts/requests.js",
+             "content-scripts/youtube_ui.js",
+             "content-scripts/timeline_events.js",
+             "content-scripts/content.js"],
+       "css": ["content-scripts/content.css"],
+      "run_at": "document_start"
     }
   ],
 

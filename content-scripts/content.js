@@ -56,12 +56,22 @@ Utils.listenEventOnce(window, 'load', async (e) => {
 // })
 // })
 
-browser.runtime.onMessage.addListener((request) => {
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === '#triggerEdit') {
     // YouTubeUI.triggerEditor(request.sortedPhrases)
   } else if (request.action === 'enableSubtitles') {
-    TimelineEvents.enableEventsByTags([TimelineEvents.TAGS.subtitle])
+    try {
+      TimelineEvents.enableEventsByTags([TimelineEvents.TAGS.subtitle])
+      sendResponse({ status: 200 })
+    } catch (e) {
+      sendResponse({ status: 500 })
+    }
   } else if (request.action === 'disableSubtitles') {
-    TimelineEvents.disableEventsByTags([TimelineEvents.TAGS.subtitle])
+    try {
+      TimelineEvents.disableEventsByTags([TimelineEvents.TAGS.subtitle])
+      sendResponse({ status: 200 })
+    } catch (e) {
+      sendResponse({ status: 500 })
+    }
   }
 })

@@ -3,11 +3,18 @@
 'use strict'
 
 async function callOnActiveTab (callback, ...args) {
-  browser.tabs.query({ currentWindow: true, active: true }).then((tabs) => {
-    for (var tab of tabs) {
-      callback(tab, ...args)
-    }
-  })
+  const tabs = await browser.tabs.query({ currentWindow: true, active: true })
+  for (const tab of tabs) {
+    callback(tab, ...args)
+  }
 }
 
-export { callOnActiveTab }
+async function getSettings (settings) {
+  const response = await browser.runtime.sendMessage({ action: 'get_settings', data: settings })
+  if (response.status !== 200) {
+    throw new Error()
+  }
+  return response.data
+}
+
+export { callOnActiveTab, getSettings }

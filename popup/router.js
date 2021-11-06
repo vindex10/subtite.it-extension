@@ -1,7 +1,8 @@
 'use strict'
 
-import * as Utils from './utils.js' // {callOnActiveTab}
+import * as Utils from './utils.js' // {callOnActiveTab, getSettings}
 import * as User from './user.js' // {currentUser}
+import * as UI from './ui.js' // {setSubtitlesSwitchEnabled, setSubtitlesSwitchDisabled}
 import * as Actions from './actions.js' // {triggerEdit, toggleSubtitles}
 
 async function initRouter () {
@@ -45,6 +46,13 @@ async function initRouter () {
 
   backHomePageLink.addEventListener('click', goBackHandler)
   backHome.addEventListener('click', goBackHandler)
+
+  const subtitlesEnabled = (await Utils.getSettings(['subtitles_enabled'])).subtitles_enabled
+  if (subtitlesEnabled) {
+    UI.setSubtitlesSwitchEnabled()
+  } else {
+    UI.setSubtitlesSwitchDisabled()
+  }
   toggleSubtitlesSwitch.addEventListener('change', async (e) => {
     await Utils.callOnActiveTab(Actions.toggleSubtitles, e)
   })

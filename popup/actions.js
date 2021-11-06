@@ -77,13 +77,29 @@ async function triggerEdit (activeTab) {
   await browser.tabs.sendMessage(activeTab.id, { action: 'triggerEdit', sortedPhrases: sortedPhrases })
 }
 
-function toggleSubtitles (activeTab, e) {
+async function toggleSubtitles (activeTab, e) {
   if (e.target.checked) {
-    browser.tabs.sendMessage(activeTab.id, { action: 'enableSubtitles' })
-    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Disable subtitles'
+    // disableSubtitles is checked and clicked, therefore enableSubtitles
+    const setCfg = await browser.runtime.sendMessage({ action: 'update_settings', data: { subtitles_enabled: true } })
+    if (setCfg.status !== 200) {
+      throw new Error()
+    }
+    const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'enableSubtitles' })
+    if (contentToggle.status !== 200) {
+      throw new Error()
+    }
+    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Subtitles enabled'
   } else {
-    browser.tabs.sendMessage(activeTab.id, { action: 'disableSubtitles' })
-    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Enable subtitles'
+    // disableSubtitles is unchecked and clicked, therefore disableSubtitles
+    const setCfg = await browser.runtime.sendMessage({ action: 'update_settings', data: { subtitles_enabled: false } })
+    if (setCfg.status !== 200) {
+      throw new Error()
+    }
+    const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'disableSubtitles' })
+    if (contentToggle.status !== 200) {
+      throw new Error()
+    }
+    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Subtitles disabled'
   }
 }
 

@@ -2,10 +2,28 @@
 
 'use strict'
 
+async function sendCorrection (oldTEvent, newPhrase, e) {
+  console.log('Send: ' + newPhrase)
+  UInterface.removeInlineEdit()
+  const newSubtitleEvent = TimelineEvent.fromEvent(oldTEvent, {
+    activate: F.partial(UInterface.replaceSubtitle, newPhrase, subtitleClick)
+  })
+  TimelineEvents.pushDisabledEvent(newSubtitleEvent)
+  // BUG: what if disabled subtitles in settings in the middle?
+  TimelineEvents.enableEventsByTags([TimelineEvents.TAGS.subtitle])
+}
+
+function subtitleClick (e) {
+  const currentPhrase = e.currentTarget.innerHTML
+  const disabledNow = TimelineEvents.disableEventsByTags([TimelineEvents.TAGS.subtitle])
+  const currentSubtitleEvent = disabledNow.active[0]
+  UInterface.showInlineEdit(currentPhrase, F.partial(sendCorrection, currentSubtitleEvent))
+}
+
 function tEventFromPhrase (phrase) {
   const tstart = phrase.start / 1000
   const tstop = phrase.stop / 1000
-  const eactivate = F.partial(UInterface.replaceSubtitle, phrase.data)
+  const eactivate = F.partial(UInterface.replaceSubtitle, phrase.data, subtitleClick)
   const edeactivate = UInterface.removeSubtitle
   const tags = new Set([TimelineEvents.TAGS.subtitle])
   return new TimelineEvent(tstart, tstop, eactivate, edeactivate, tags)

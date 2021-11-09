@@ -21,7 +21,8 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content-scripts/utils.js",
+      "js": ["content-scripts/settings.js",
+             "content-scripts/utils.js",
              "content-scripts/storage.js",
              "content-scripts/requests.js",
              "content-scripts/youtube_ui.js",

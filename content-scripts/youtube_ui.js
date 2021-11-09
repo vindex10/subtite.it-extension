@@ -1,4 +1,6 @@
 /* global Requests */
+/* global Settings */
+/* global Utils */
 
 'use strict'
 
@@ -72,6 +74,53 @@ YouTubeUI.triggerEditor = async function (sortedPhrases) {
   })
 }
 
+YouTubeUI.showInlineEdit = function (content, submitAction) {
+  /* WARNING! expects escaped content */
+  const subClass = 'subtite__inline-edit'
+  let theSub = document.querySelector('.' + subClass)
+  if (theSub !== null) {
+    theSub.innerHTML = `
+      <textarea>${content}</textarea>
+    `
+    theSub.children[0].select()
+    return
+  }
+  theSub = document.createElement('div')
+  theSub.addEventListener('keydown', async (e) => {
+    // TODO: make cross-browser
+    e.stopPropagation()
+  }, true)
+  theSub.addEventListener('keypress', async (e) => {
+    // TODO: make cross-browser
+    e.stopPropagation()
+  }, true)
+  theSub.addEventListener('keyup', async (e) => {
+    // TODO: make cross-browser
+    e.stopPropagation()
+    if (e.key !== Settings.UInterface.submitEditKey) { return }
+    const eMods = Utils.parseEventModifiers(e)
+    for (const keyMod of Settings.UInterface.submitEditKeyMods) {
+      if (!eMods.has(keyMod)) { return }
+    }
+    await submitAction(theSub.children[0].value, e)
+  }, true)
+  theSub.classList.add(subClass)
+  theSub.innerHTML = `
+    <textarea>${content}</textarea>
+  `
+  document.getElementById('movie_player').appendChild(theSub)
+  theSub.children[0].select()
+}
+
+YouTubeUI.removeInlineEdit = function () {
+  const subClass = 'subtite__inline-edit'
+  const theSub = document.querySelector('.' + subClass)
+  if (theSub === null) {
+    return
+  }
+  theSub.remove()
+}
+
 YouTubeUI.showTrigger = function (type, callback) {
   const theLogo = document.createElement('div')
   theLogo.addEventListener('click', async () => {
@@ -86,12 +135,13 @@ YouTubeUI.showTrigger = function (type, callback) {
   }, YouTubeUI.triggerShowtime)
 }
 
-YouTubeUI.replaceSubtitle = function (phrase) {
+YouTubeUI.replaceSubtitle = function (phrase, onClick) {
   const subClass = 'subtite__subtitle'
   let theSub = document.querySelector('.' + subClass)
   if (theSub === null) {
     theSub = document.createElement('div')
     theSub.classList.add(subClass)
+    theSub.addEventListener('click', onClick, true)
     document.getElementById('movie_player').appendChild(theSub)
   }
   theSub.innerHTML = phrase

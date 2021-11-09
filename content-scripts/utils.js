@@ -1,3 +1,5 @@
+/* global Settings */
+
 'use strict'
 
 class __EventListener {
@@ -43,9 +45,18 @@ Utils.generateGUID = function () {
   return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
 }
 
+Utils.parseEventModifiers = function (e) {
+  const res = []
+  if (e.ctrlKey) { res.push(Settings.KEY_MOD.ctrl) }
+  if (e.shiftKey) { res.push(Settings.KEY_MOD.shift) }
+  if (e.altKey) { res.push(Settings.KEY_MOD.alt) }
+  if (e.metaKey) { res.push(Settings.KEY_MOD.meta) }
+  return new Set(res)
+}
+
 const F = {}
 
-F.partial = function (fn, firstArg) { return (...restArgs) => { return fn(firstArg, ...restArgs) } }
+F.partial = function (fn, ...firstArgs) { return (...restArgs) => { return fn(...firstArgs, ...restArgs) } }
 
 const CollectionUtils = {}
 

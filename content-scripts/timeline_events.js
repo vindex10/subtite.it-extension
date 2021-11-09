@@ -24,6 +24,12 @@ TimelineEvents.stopTimelineListener = function () {
   TimelineEvents._INACTIVE_TEVENTS = undefined
 }
 
+TimelineEvents.removeEvent = function (tevent) {
+  TimelineEvents._DISABLED_TEVENTS = TimelineEvents._DISABLED_TEVENTS.filter(
+    (e) => { return e !== tevent }
+  )
+}
+
 TimelineEvents.pushEvent = function (tevent) {
   // TODO: optimize to push in sorted order
   TimelineEvents._INACTIVE_TEVENTS.push(tevent)
@@ -35,14 +41,19 @@ TimelineEvents.pushDisabledEvent = function (tevent) {
 
 TimelineEvents.disableEventsByTags = function (tags) {
   tags = new Set(tags)
-  TimelineEvents._disableActiveByTags(tags)
-  TimelineEvents._disableInactiveByTags(tags)
+  const disabledActive = TimelineEvents._disableActiveByTags(tags)
+  const disabledInactive = TimelineEvents._disableInactiveByTags(tags)
+  return {
+    active: disabledActive,
+    inactive: disabledInactive
+  }
 }
 
 TimelineEvents._disableActiveByTags = function (tags) {
   if (!TimelineEvents._ACTIVE_TEVENTS) { return }
 
   const newActiveTEvents = []
+  const disabledNow = []
 
   for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
     if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
@@ -50,26 +61,31 @@ TimelineEvents._disableActiveByTags = function (tags) {
       continue
     }
     tevent.deactivate()
+    disabledNow.push(tevent)
     TimelineEvents._DISABLED_TEVENTS.push(tevent)
   }
 
   TimelineEvents._ACTIVE_TEVENTS = newActiveTEvents
+  return disabledNow
 }
 
 TimelineEvents._disableInactiveByTags = function (tags) {
   if (!TimelineEvents._INACTIVE_TEVENTS) { return }
 
   const newInactiveTEvents = []
+  const disabledNow = []
 
   for (const tevent of TimelineEvents._INACTIVE_TEVENTS) {
     if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
       newInactiveTEvents.push(tevent)
       continue
     }
+    disabledNow.push(tevent)
     TimelineEvents._DISABLED_TEVENTS.push(tevent)
   }
 
   TimelineEvents._INACTIVE_TEVENTS = newInactiveTEvents
+  return disabledNow
 }
 
 TimelineEvents.enableEventsByTags = function (tags) {
@@ -95,7 +111,7 @@ TimelineEvents._deactivateActive = function (ts) {
   const stillActiveTEvents = []
 
   for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
-    if (ts > tevent.tStart && ts < tevent.tStop) {
+    if (ts >= tevent.tStart && ts < tevent.tStop) {
       stillActiveTEvents.push(tevent)
       continue
     }
@@ -112,7 +128,7 @@ TimelineEvents._activateInactive = function (ts) {
   const stillInactiveTEvents = []
 
   for (const tevent of TimelineEvents._INACTIVE_TEVENTS) {
-    if (ts < tevent.tStart || ts > tevent.tStop) {
+    if (ts < tevent.tStart || ts >= tevent.tStop) {
       stillInactiveTEvents.push(tevent)
       continue
     }
@@ -159,5 +175,14 @@ class TimelineEvent {
     this.activate = activate
     this.deactivate = deactivate
     this.tags = new Set(tags)
+  }
+
+  static fromEvent (e, replacements) {
+    const tStart = (replacements.tStart === undefined) ? e.tStart : replacements.tStart
+    const tStop = (replacements.tStop === undefined) ? e.tStop : replacements.tStop
+    const activate = (replacements.activate === undefined) ? e.activate : replacements.activate
+    const deactivate = (replacements.deactivate === undefined) ? e.deactivate : replacements.deactivate
+    const tags = (replacements.tags === undefined) ? e.tags : replacements.tags
+    return new TimelineEvent(tStart, tStop, activate, deactivate, tags)
   }
 }

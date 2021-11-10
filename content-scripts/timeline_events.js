@@ -24,9 +24,20 @@ TimelineEvents.stopTimelineListener = function () {
   TimelineEvents._INACTIVE_TEVENTS = undefined
 }
 
-TimelineEvents.removeEvent = function (tevent) {
-  TimelineEvents._DISABLED_TEVENTS = TimelineEvents._DISABLED_TEVENTS.filter(
-    (e) => { return e !== tevent }
+TimelineEvents.replaceEvent = function (oldTEvent, newTEvent) {
+  TimelineEvents._DISABLED_TEVENTS = TimelineEvents._DISABLED_TEVENTS.map(
+    (e) => { return e === oldTEvent ? newTEvent : e }
+  )
+  TimelineEvents._INACTIVE_TEVENTS = TimelineEvents._INACTIVE_TEVENTS.map(
+    (e) => { return e === oldTEvent ? newTEvent : e }
+  )
+  TimelineEvents._ACTIVE_TEVENTS = TimelineEvents._ACTIVE_TEVENTS.map(
+    (e) => {
+      if (e !== oldTEvent) { return e }
+      oldTEvent.deactivate()
+      newTEvent.activate()
+      return newTEvent
+    }
   )
 }
 
@@ -37,6 +48,18 @@ TimelineEvents.pushEvent = function (tevent) {
 
 TimelineEvents.pushDisabledEvent = function (tevent) {
   TimelineEvents._DISABLED_TEVENTS.push(tevent)
+}
+
+TimelineEvents.getActiveEventsByTags = function (tags) {
+  tags = new Set(tags)
+  const res = []
+  for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      continue
+    }
+    res.push(tevent)
+  }
+  return res
 }
 
 TimelineEvents.disableEventsByTags = function (tags) {

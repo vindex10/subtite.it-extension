@@ -9,8 +9,8 @@ class __EventListener {
     this._elem = elem
     this._active = true
 
-    function callback (e) {
-      return func(e, THIS)
+    async function callback (e) {
+      await func(e, THIS)
     }
 
     this._args = [type, callback, capture]
@@ -30,8 +30,8 @@ const Utils = {}
 Utils.listenEvent = (elem, type, func, capture) => { return new __EventListener(elem, type, func, capture) }
 
 Utils.listenEventOnce = function (elem, type, func, capture) {
-  function callback (e, listener) {
-    func(e)
+  async function callback (e, listener) {
+    await func(e, listener)
     listener.destroy()
   }
 

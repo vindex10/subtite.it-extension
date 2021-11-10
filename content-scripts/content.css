@@ -79,31 +79,8 @@
     left: 5%;
     right: 5%;
     padding: 0.1em;
-    z-index: 40;
-}
-
-.subtite__inline-edit {
-    background-color: rgba(0, 0, 0, 0.4);
-    position: absolute;
-    overflow: hidden;
-    bottom: 3em;
-    left: 5%;
-    right: 5%;
-    padding: 0.1em;
-    z-index: 40;
-}
-
-.subtite__inline-edit textarea {
-    font-size: 18pt;
-    font-family: "YouTube Noto", Roboto, Arial, Helvetica, sans-serif;
-    color: white;
-    border: 0;
-    background-color: transparent;
-    text-align: center;
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+    z-index: 61;
+    cursor: text;
 }
 
 .subtite__triggerAction {

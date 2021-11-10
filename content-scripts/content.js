@@ -2,22 +2,55 @@
 
 'use strict'
 
-async function sendCorrection (oldTEvent, newPhrase, e) {
+async function sendCorrection (oldTEvent, newPhrase) {
   console.log('Send: ' + newPhrase)
-  UInterface.removeInlineEdit()
   const newSubtitleEvent = TimelineEvent.fromEvent(oldTEvent, {
     activate: F.partial(UInterface.replaceSubtitle, newPhrase, subtitleClick)
   })
-  TimelineEvents.pushDisabledEvent(newSubtitleEvent)
   // BUG: what if disabled subtitles in settings in the middle?
-  TimelineEvents.enableEventsByTags([TimelineEvents.TAGS.subtitle])
+  TimelineEvents.replaceEvent(oldTEvent, newSubtitleEvent)
 }
 
 function subtitleClick (e) {
-  const currentPhrase = e.currentTarget.innerHTML
-  const disabledNow = TimelineEvents.disableEventsByTags([TimelineEvents.TAGS.subtitle])
-  const currentSubtitleEvent = disabledNow.active[0]
-  UInterface.showInlineEdit(currentPhrase, F.partial(sendCorrection, currentSubtitleEvent))
+  const subtitleDiv = e.currentTarget
+  const wasPaused = UInterface.pauseVideo()
+  const origPhrase = subtitleDiv.innerText
+  const oldTEvent = TimelineEvents.getActiveEventsByTags([TimelineEvents.TAGS.subtitle])[0]
+  subtitleDiv.contentEditable = true
+  subtitleDiv.focus()
+  const listeners = []
+  listeners.push(
+    Utils.listenEvent(subtitleDiv, 'keydown', async (e, _) => {
+      e.stopPropagation()
+    }, true)
+  )
+  listeners.push(
+    Utils.listenEvent(subtitleDiv, 'keypress', async (e, _) => {
+      e.stopPropagation()
+    }, true)
+  )
+  listeners.push(
+    Utils.listenEvent(subtitleDiv, 'focusout', async (e, listener) => {
+      e.stopPropagation()
+      subtitleDiv.contentEditable = false
+      subtitleDiv.innerHTML = origPhrase
+      if (!wasPaused) { UInterface.playVideo() }
+      listeners.map(l => { l.destroy() })
+    }, true)
+  )
+  listeners.push(
+    Utils.listenEvent(subtitleDiv, 'keyup', async (e, listener) => {
+      e.stopPropagation()
+      if (!UInterface.isSubmitEditEvent(e)) {
+        return
+      }
+      const newPhrase = subtitleDiv.innerText
+      await sendCorrection(oldTEvent, newPhrase)
+      subtitleDiv.contentEditable = false
+      if (!wasPaused) { UInterface.playVideo() }
+      listeners.map(l => { l.destroy() })
+    }, true)
+  )
 }
 
 function tEventFromPhrase (phrase) {

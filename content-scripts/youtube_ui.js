@@ -42,6 +42,20 @@ YouTubeUI.showEditor = async function () {
   })
 }
 
+YouTubeUI.pauseVideo = function () {
+  const ytplayer = document.querySelector('.video-stream')
+  const wasPaused = ytplayer.paused
+  ytplayer.pause()
+  return wasPaused
+}
+
+YouTubeUI.playVideo = function () {
+  const ytplayer = document.querySelector('.video-stream')
+  const wasPlayed = !ytplayer.paused
+  ytplayer.play()
+  return wasPlayed
+}
+
 YouTubeUI.triggerEditor = async function (sortedPhrases) {
   document.querySelector('.video-stream').pause()
   document.querySelector('.video-stream').currentTime = sortedPhrases[1].start / 1000
@@ -72,53 +86,6 @@ YouTubeUI.triggerEditor = async function (sortedPhrases) {
       console.log('Translation cannot be saved: ', error)
     }
   })
-}
-
-YouTubeUI.showInlineEdit = function (content, submitAction) {
-  /* WARNING! expects escaped content */
-  const subClass = 'subtite__inline-edit'
-  let theSub = document.querySelector('.' + subClass)
-  if (theSub !== null) {
-    theSub.innerHTML = `
-      <textarea>${content}</textarea>
-    `
-    theSub.children[0].select()
-    return
-  }
-  theSub = document.createElement('div')
-  theSub.addEventListener('keydown', async (e) => {
-    // TODO: make cross-browser
-    e.stopPropagation()
-  }, true)
-  theSub.addEventListener('keypress', async (e) => {
-    // TODO: make cross-browser
-    e.stopPropagation()
-  }, true)
-  theSub.addEventListener('keyup', async (e) => {
-    // TODO: make cross-browser
-    e.stopPropagation()
-    if (e.key !== Settings.UInterface.submitEditKey) { return }
-    const eMods = Utils.parseEventModifiers(e)
-    for (const keyMod of Settings.UInterface.submitEditKeyMods) {
-      if (!eMods.has(keyMod)) { return }
-    }
-    await submitAction(theSub.children[0].value, e)
-  }, true)
-  theSub.classList.add(subClass)
-  theSub.innerHTML = `
-    <textarea>${content}</textarea>
-  `
-  document.getElementById('movie_player').appendChild(theSub)
-  theSub.children[0].select()
-}
-
-YouTubeUI.removeInlineEdit = function () {
-  const subClass = 'subtite__inline-edit'
-  const theSub = document.querySelector('.' + subClass)
-  if (theSub === null) {
-    return
-  }
-  theSub.remove()
 }
 
 YouTubeUI.showTrigger = function (type, callback) {
@@ -154,6 +121,15 @@ YouTubeUI.removeSubtitle = function () {
     return
   }
   theSub.remove()
+}
+
+YouTubeUI.isSubmitEditEvent = function (e) {
+  if (e.key !== Settings.UInterface.submitEditKey) { return false }
+  const eMods = Utils.parseEventModifiers(e)
+  for (const keyMod of Settings.UInterface.submitEditKeyMods) {
+    if (!eMods.has(keyMod)) { return false }
+  }
+  return true
 }
 
 YouTubeUI.getVideoTimestamp = function () { return document.querySelector('.video-stream').currentTime }

@@ -1,4 +1,4 @@
-/* global TimelineEvents, TimelineEvent, UInterface, Utils, F, Storage, browser */
+/* global TimelineEvents, TimelineEvent, UInterface, Utils, F, Storage, Settings, browser */
 
 'use strict'
 
@@ -65,8 +65,16 @@ function tEventFromPhrase (phrase) {
 function _loadPhrases (phrases) {
   for (const p of phrases) {
     const parsedPhrase = tEventFromPhrase(p)
-    TimelineEvents.pushEvent(parsedPhrase)
+    TimelineEvents.pushDisabledEvent(parsedPhrase)
   }
+}
+
+function disableSubtitles () {
+  TimelineEvents.disableEventsByTags([TimelineEvents.TAGS.subtitle])
+}
+
+function enableSubtitles () {
+  TimelineEvents.enableEventsByTags([TimelineEvents.TAGS.subtitle])
 }
 
 Utils.listenEventOnce(window, 'load', async (e) => {
@@ -74,6 +82,8 @@ Utils.listenEventOnce(window, 'load', async (e) => {
   const phrases = Storage.getCurrentPhrases()
   TimelineEvents.initTimelineListener()
   _loadPhrases(phrases)
+  const subtitlesEnabled = (await Settings.getSettings(['subtitles_enabled'])).subtitles_enabled
+  if (subtitlesEnabled) { enableSubtitles() }
   TimelineEvents.runTimelineListener()
 })
 
@@ -110,19 +120,23 @@ Utils.listenEventOnce(window, 'load', async (e) => {
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === '#triggerEdit') {
     // YouTubeUI.triggerEditor(request.sortedPhrases)
+    return true
   } else if (request.action === 'enableSubtitles') {
     try {
-      TimelineEvents.enableEventsByTags([TimelineEvents.TAGS.subtitle])
+      enableSubtitles()
       sendResponse({ status: 200 })
     } catch (e) {
       sendResponse({ status: 500 })
     }
+    return true
   } else if (request.action === 'disableSubtitles') {
     try {
-      TimelineEvents.disableEventsByTags([TimelineEvents.TAGS.subtitle])
+      disableSubtitles()
       sendResponse({ status: 200 })
     } catch (e) {
       sendResponse({ status: 500 })
     }
+    return true
   }
+  return false
 })

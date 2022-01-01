@@ -9,12 +9,18 @@ async function callOnActiveTab (callback, ...args) {
   }
 }
 
+const asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 async function getSettings (settings) {
-  const response = await browser.runtime.sendMessage({ action: 'get_settings', data: settings })
+  let response
+  while (!response) {
+    response = await browser.runtime.sendMessage({ action: 'get_settings', data: settings })
+    asyncWait(50)
+  }
   if (response.status !== 200) {
     throw new Error()
   }
   return response.data
 }
 
-export { callOnActiveTab, getSettings }
+export { callOnActiveTab, asyncWait, getSettings }

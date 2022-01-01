@@ -38,6 +38,8 @@ Utils.listenEventOnce = function (elem, type, func, capture) {
   Utils.listenEvent(elem, type, callback, capture)
 }
 
+Utils.asyncWait = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 Utils.generateGUID = function () {
   var S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)

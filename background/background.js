@@ -6,11 +6,12 @@ const AppState = {}
 AppState._STATE = {
   enabled: true
 }
-AppState.save = function () {
-  // pass
+AppState.save = async function () {
+  await browser.storage.sync.set({ settings: AppState._STATE })
 }
-AppState.restore = function () {
-  // pass
+AppState.restore = async function () {
+  const response = await browser.storage.sync.get({ settings: AppState._STATE })
+  AppState._STATE = response.settings
 }
 
 AppState.update = function (settingType, newValue) {
@@ -37,14 +38,12 @@ AppState.updateEnabled = function (value) {
   return newVal
 }
 
-AppState.restore()
-
 const MessagingAPI = {}
 MessagingAPI.updateSettings = function (settingTypeToValue) {
   for (const [settingType, newValue] of Object.entries(settingTypeToValue)) {
     AppState.update(settingType, newValue)
   }
-  AppState.save()
+  AppState.save().then()
 }
 MessagingAPI.getSettings = function (settingTypes) {
   const res = {}
@@ -60,12 +59,17 @@ function messageHandler (request, sender, sendResponse) {
     data = MessagingAPI.updateSettings(request.data)
   } else if (request.action === 'get_settings') {
     data = MessagingAPI.getSettings(request.data)
+  } else {
+    return false
   }
   const response = { status: 200 }
   if (data !== undefined) {
     response.data = data
   }
   sendResponse(response)
+  return true
 }
 
-browser.runtime.onMessage.addListener(messageHandler)
+AppState.restore().then(() => {
+  browser.runtime.onMessage.addListener(messageHandler)
+})

@@ -2,7 +2,7 @@
 
 import * as Utils from './utils.js' // {callOnActiveTab, getSettings}
 import * as User from './user.js' // {currentUser}
-import * as UI from './ui.js' // {setSubtitlesSwitchEnabled, setSubtitlesSwitchDisabled}
+import * as UI from './ui.js' // {setSubtitlesSwitchEnabled, setSubtitlesSwitchDisabled, populateNativeLangs}
 import * as Actions from './actions.js' // {triggerEdit, toggleSubtitles}
 
 async function initRouter () {
@@ -17,15 +17,16 @@ async function initRouter () {
   const backHomePageLink = document.querySelector('.header__back-link')
   const backHome = document.querySelector('.back-link')
   const toggleSubtitlesSwitch = document.querySelector('#toggle-subtitles')
+  const setNativeLangSelect = document.querySelector('#set-native-lang')
 
-  async function goBackHandler () {
+  function goBackHandler () {
     landIngPopUp.style.display = 'block'
     authPopUp.style.display = 'none'
     logInPopUp.style.display = 'none'
     profilePopUp.style.display = 'none'
   }
 
-  await goBackHandler()
+  goBackHandler()
 
   AuthPageLink.addEventListener('click', async () => {
     landIngPopUp.style.display = 'none'
@@ -55,6 +56,11 @@ async function initRouter () {
   }
   toggleSubtitlesSwitch.addEventListener('change', async (e) => {
     await Utils.callOnActiveTab(Actions.toggleSubtitles, e)
+  })
+
+  await UI.populateSupportedLangs()
+  setNativeLangSelect.addEventListener('change', async (e) => {
+    await Utils.callOnActiveTab(Actions.setNativeLang, e)
   })
 }
 

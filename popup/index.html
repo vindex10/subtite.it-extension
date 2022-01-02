@@ -6,26 +6,37 @@
     <meta name="description" content="Browser extension for creating subtitiles">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" type="text/css" href="../assets/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
 
 </head>
 <body>
-    <div class="popup-content" id="popup-landing">
-        <header class="header">
-          <div class="toggle-container">
-              <input type="checkbox" id="toggle-subtitles" checked="checked" /><label for="toggle-subtitles"></label>
-          </div>
-          <div class="toggle-label-container">
-            <span class="toggle-label">Subtitles enabled</span>
-          </div>
+    <div class="popup-content container-sm" id="popup-landing">
+        <header class="row">
+            <h1 class="col">Subtite it!</h1>
         </header>
-        <main class="main">
-            <div class="main__content">
-              Ready to contribute? Join Subtitle community!
-              <div class="header__auth" id="auth-buttons">
-                <button class="header__login-link" id="log-in">Log In</button>
-                <button class="header__auth-link">Sign Up</button>
+        <main class="main row">
+            <div class="main__content col">
+              <div class="main__options">
+                  <div class="toggle-subtitles-container row">
+                      <div class="col-3 text-end">
+                      <div class="form-check form-switch mt-2 d-inline-block">
+                        <input class="form-check-input" type="checkbox" id="toggle-subtitles" role="switch" checked="checked" />
+                      </div>
+                      </div>
+                      <label for="toggle-subtitles" class="col col-form-label">Subtitles enabled</label>
+                  </div>
+                  <div class="set-native-lang-container row">
+                      <div class="col-3"><select id="set-native-lang" class="form-select"></select></div>
+                      <label for="set-native-lang" class="col col-form-label">Mother tongue</label>
+                  </div>
+              </div>
+              <div class="mt-5">
+                  <div class="row"><p class="col">Ready to contribute? Join Subtitle community!</p></div>
+                  <div class="header__auth row" id="auth-buttons">
+                      <div class="col-4 offset-2"><button type="button" class="btn btn-success header__auth-link" id="log-in">Log In</button></div>
+                      <div class="col-4"><button type="button" class="btn btn-primary header__login-link">Sign Up</button></div>
+                  </div>
               </div>
             </div>
         </main>
@@ -40,7 +51,7 @@
                 <span class="header__back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
             </div>
         </header>
-        <main class="main-login">
+        <main class="main">
             <form class="main__form" id="signin-form" autoComplete="on">
                 <input
                         name="useremail"
@@ -84,7 +95,7 @@
               <span class="back-link"><img id="back-arrow" src="../assets/img/icons/back.png"></span>
           </div>
       </header>
-      <main class="main-login">
+      <main class="main">
           <form class="main__form" autoComplete="on">
               <input
                       name="useremail"
@@ -123,7 +134,7 @@
               <span class="header__logo-title">Welcome</span>
           </div>
       </header>
-      <main class="main-login">
+      <main class="main">
           <section class="main__section_find">
               <button class="main__form-submit triggerEdit">Edit</button>
               <a href="https://subtite.it:3000/logout"><button class="main__form-submit logout">Logout</button></a>
@@ -131,7 +142,7 @@
       </main>
   </div>
 
-    <script type="module" src="popup.js"></script>
+  <script type="module" src="popup.js"></script>
 
 </body>
 </html>

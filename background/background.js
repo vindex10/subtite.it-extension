@@ -4,7 +4,8 @@
 
 const AppState = {}
 AppState._STATE = {
-  enabled: true
+  enabled: true,
+  native_lang: 'en'
 }
 AppState.save = async function () {
   await browser.storage.sync.set({ settings: AppState._STATE })
@@ -14,28 +15,42 @@ AppState.restore = async function () {
   AppState._STATE = response.settings
 }
 
-AppState.update = function (settingType, newValue) {
-  if (settingType === 'subtitles_enabled') {
-    return AppState.updateEnabled(newValue)
+AppState._SETTING_TYPES = {}
+AppState._SETTING_TYPES.subtitles_enabled = {
+  update: (value) => {
+    const newVal = !!value
+    AppState._STATE.enabled = newVal
+    return newVal
+  },
+  get: () => {
+    return AppState._STATE.enabled
   }
-  throw new Error('Setting type is not supported', settingType)
+}
+AppState._SETTING_TYPES.native_lang = {
+  update: (value) => {
+    const newVal = value.toString()
+    AppState._STATE.native_lang = newVal
+    return newVal
+  },
+  get: () => {
+    return AppState._STATE.native_lang
+  }
+}
+
+AppState.update = function (settingType, newValue) {
+  const setting = AppState._SETTING_TYPES[settingType]
+  if (setting === undefined) {
+    throw new Error('Setting type is not supported', settingType)
+  }
+  return setting.update(newValue)
 }
 
 AppState.get = function (settingType) {
-  if (settingType === 'subtitles_enabled') {
-    return AppState.getEnabled()
+  const setting = AppState._SETTING_TYPES[settingType]
+  if (setting === undefined) {
+    throw new Error('Setting type is not supported', settingType)
   }
-  throw new Error('Setting type is not supported', settingType)
-}
-
-AppState.getEnabled = function () {
-  return AppState._STATE.enabled
-}
-
-AppState.updateEnabled = function (value) {
-  const newVal = !!value
-  AppState._STATE.enabled = newVal
-  return newVal
+  return setting.get()
 }
 
 const MessagingAPI = {}

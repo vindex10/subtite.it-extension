@@ -78,14 +78,20 @@ function enableSubtitles () {
 }
 
 Utils.listenEventOnce(window, 'load', async (e) => {
+  TimelineEvents.initTimelineListener()
+  TimelineEvents.runTimelineListener()
+  await refreshSubtitles()
+})
+
+async function refreshSubtitles () {
   await Storage.syncPhrases()
   const phrases = Storage.getCurrentPhrases()
-  TimelineEvents.initTimelineListener()
+  const subtitlesWereEnabled = (await Settings.getSettings(['subtitles_enabled'])).subtitles_enabled
+  if (subtitlesWereEnabled) { disableSubtitles() }
+  TimelineEvents.removeEventsByTags([TimelineEvents.TAGS.subtitle])
   _loadPhrases(phrases)
-  const subtitlesEnabled = (await Settings.getSettings(['subtitles_enabled'])).subtitles_enabled
-  if (subtitlesEnabled) { enableSubtitles() }
-  TimelineEvents.runTimelineListener()
-})
+  if (subtitlesWereEnabled) { enableSubtitles() }
+}
 
 // window.addEventListener('keydown', async (e) => {
 /// / trigger on Space
@@ -121,7 +127,7 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === '#triggerEdit') {
     // YouTubeUI.triggerEditor(request.sortedPhrases)
     return true
-  } else if (request.action === 'enableSubtitles') {
+  } else if (request.action === 'enable_subtitles') {
     try {
       enableSubtitles()
       sendResponse({ status: 200 })
@@ -129,9 +135,17 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({ status: 500 })
     }
     return true
-  } else if (request.action === 'disableSubtitles') {
+  } else if (request.action === 'disable_subtitles') {
     try {
       disableSubtitles()
+      sendResponse({ status: 200 })
+    } catch (e) {
+      sendResponse({ status: 500 })
+    }
+    return true
+  } else if (request.action === 'set_native_lang') {
+    try {
+      refreshSubtitles()
       sendResponse({ status: 200 })
     } catch (e) {
       sendResponse({ status: 500 })

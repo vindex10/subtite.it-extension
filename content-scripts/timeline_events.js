@@ -62,6 +62,72 @@ TimelineEvents.getActiveEventsByTags = function (tags) {
   return res
 }
 
+TimelineEvents.removeEventsByTags = function (tags) {
+  tags = new Set(tags)
+  const removedActive = TimelineEvents._removeActiveByTags(tags)
+  const removedInactive = TimelineEvents._removeInactiveByTags(tags)
+  const removedDisabled = TimelineEvents._removeDisabledByTags(tags)
+  return {
+    active: removedActive,
+    inactive: removedInactive,
+    disabled: removedDisabled
+  }
+}
+
+TimelineEvents._removeActiveByTags = function (tags) {
+  if (!TimelineEvents._ACTIVE_TEVENTS) { return [] }
+
+  const newActiveTEvents = []
+  const removed = []
+
+  for (const tevent of TimelineEvents._ACTIVE_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      newActiveTEvents.push(tevent)
+      continue
+    }
+    removed.push(tevent)
+  }
+
+  TimelineEvents._ACTIVE_TEVENTS = newActiveTEvents
+  return removed
+}
+
+TimelineEvents._removeInactiveByTags = function (tags) {
+  if (!TimelineEvents._INACTIVE_TEVENTS) { return [] }
+
+  const newInactiveTEvents = []
+  const removed = []
+
+  for (const tevent of TimelineEvents._INACTIVE_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      newInactiveTEvents.push(tevent)
+      continue
+    }
+    removed.push(tevent)
+  }
+
+  TimelineEvents._INACTIVE_TEVENTS = newInactiveTEvents
+  return removed
+}
+
+TimelineEvents._removeDisabledByTags = function (tags) {
+  if (!TimelineEvents._DISABLED_TEVENTS) { return [] }
+
+  const newDisabledTEvents = []
+  const removed = []
+
+  for (const tevent of TimelineEvents._DISABLED_TEVENTS) {
+    if (CollectionUtils.intersectSets(tevent.tags, tags).size === 0) {
+      newDisabledTEvents.push(tevent)
+      continue
+    }
+    removed.push(tevent)
+  }
+
+  TimelineEvents._DISABLED_TEVENTS = newDisabledTEvents
+  return removed
+}
+
 TimelineEvents.disableEventsByTags = function (tags) {
   tags = new Set(tags)
   const disabledActive = TimelineEvents._disableActiveByTags(tags)

@@ -84,23 +84,35 @@ async function toggleSubtitles (activeTab, e) {
     if (setCfg.status !== 200) {
       throw new Error()
     }
-    const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'enableSubtitles' })
+    const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'enable_subtitles' })
     if (contentToggle.status !== 200) {
       throw new Error()
     }
-    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Subtitles enabled'
+    document.querySelector('.toggle-subtitles-container label').innerHTML = 'Subtitles enabled'
   } else {
     // disableSubtitles is unchecked and clicked, therefore disableSubtitles
     const setCfg = await browser.runtime.sendMessage({ action: 'update_settings', data: { subtitles_enabled: false } })
     if (setCfg.status !== 200) {
       throw new Error()
     }
-    const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'disableSubtitles' })
+    const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'disable_subtitles' })
     if (contentToggle.status !== 200) {
       throw new Error()
     }
-    document.querySelector('.toggle-label-container .toggle-label').innerHTML = 'Subtitles disabled'
+    document.querySelector('.toggle-subtitles-container label').innerHTML = 'Subtitles disabled'
   }
 }
 
-export { initSignIn, triggerEdit, toggleSubtitles }
+async function setNativeLang (activeTab, e) {
+  // disableSubtitles is checked and clicked, therefore enableSubtitles
+  const setCfg = await browser.runtime.sendMessage({ action: 'update_settings', data: { native_lang: e.target.value } })
+  if (setCfg.status !== 200) {
+    throw new Error()
+  }
+  const contentToggle = await browser.tabs.sendMessage(activeTab.id, { action: 'set_native_lang' })
+  if (contentToggle.status !== 200) {
+    throw new Error()
+  }
+}
+
+export { initSignIn, triggerEdit, toggleSubtitles, setNativeLang }

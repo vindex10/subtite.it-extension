@@ -30,9 +30,10 @@ Requests.submitPhrase = async function (translationData) {
   await __postData(SERVER_NAME + '/phrase', translationData)
 }
 
-Requests.getVideoData = async function (videoLink) {
-  const videoLinkFormatted = videoLink.replace(/&.*/, '')
-  const response = await fetch(SERVER_NAME + `/subtitle?url=${videoLinkFormatted}&lang=en`, {
+Requests.getVideoData = async function (videoLink, lang) {
+  const videoLinkFormatted = encodeURI(videoLink.replace(/&.*/, ''))
+  const langFormatted = encodeURI(lang)
+  const response = await fetch(SERVER_NAME + `/subtitle?url=${videoLinkFormatted}&lang=${langFormatted}`, {
     method: 'GET'
   })
   return await response.json()

@@ -1,4 +1,4 @@
-/* global Requests */
+/* global Requests, Settings */
 
 'use strict'
 
@@ -8,7 +8,8 @@ Storage._currentSubtitle = undefined
 
 Storage.syncPhrases = async function () {
   const uri = window.location.href
-  const phrasesData = await Requests.getVideoData(uri)
+  const lang = (await Settings.getSettings(['native_lang'])).native_lang
+  const phrasesData = await Requests.getVideoData(uri, lang)
   Storage._currentSubtitle = phrasesData
 }
 
